@@ -61,27 +61,27 @@
 <p>My personal blog, <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a>, is hosted on <a href="https://netlify.com" target="_blank" rel="noopener">Netlify</a>. Whenever I change markdown files on GitHub, Netlify runs a build and publishes the modified HTML.</p>
 <p>Cloudflare recently <a href="https://blog.cloudflare.com/cloudflare-pages/" target="_blank" rel="noopener">announced</a> the introduction of <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener">Cloudflare Pages</a>, and I was lucky enough to be given access to the Beta.</p>
 <h2 id="cloudflare-pages">Cloudflare Pages</h2>
-<p>This is a walkthrough of setting up <a href="https://jldec.eu" target="_blank" rel="noopener">jldec.eu</a> on Cloudflare Pages.  </p>
-<p>If you have access to Cloudflare Pages, you will see a button like this when you login to your Cloudflare dashboard.</p>
+<p>This is a walkthrough of setting up <a href="https://jldec.eu" target="_blank" rel="noopener">jldec.eu</a>, a copy of <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a>, on Cloudflare Pages.</p>
+<p>If you have access to Cloudflare Pages, you will see this button when you login to Cloudflare.</p>
 <p><img src="./images/cf-pages-beta.png" alt="Cloudflare Pages Beta button on dashboard"></p>
 <p>This takes you to a GitHub form for granting repo access to the &#39;Cloudflare Pages&#39; GitHub app. (<em>Look for it later in your <a href="https://github.com/settings/installations" target="_blank" rel="noopener">GitHub Settings</a> to add more repos, or to revoke access.</em>)</p>
 <p><img src="./images/cf-pages-github-app.png" alt="Authorize Cloudflare Pages app on GitHub"></p>
-<p>Back on Cloudflare, you can choose the repo for the new Cloudflare Pages project.<br><a href="https://github.com/jldec/cloudflare-pages-test" target="_blank" rel="noopener">cloudflare-pages-test</a> is a copy of the markdown source repo from <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a>.</p>
+<p>Back on Cloudflare, you can choose the repo for your new Cloudflare Pages project.<br><a href="https://github.com/jldec/cloudflare-pages-test" target="_blank" rel="noopener">cloudflare-pages-test</a> is a copy of my markdown source repo from <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a>.</p>
 <p><img src="./images/cf-pages-select-repo.png" alt="Select repo for the Cloudflare Pages project"></p>
-<p>I provided the branch name, build command, and output directory.<br>The project name defaults to the repo name.</p>
+<p>In the configuratiom form, I provided branch name, build command, and output directory.<br>The project name defaults to the repo name.</p>
 <p><img src="./images/cf-pages-configure-build.png" alt="Configure the build command and output directory"></p>
 <p>Submitting the form, triggers the first build and shows the log.</p>
 <p><img src="./images/cf-pages-build-log.png" alt="First build and deploy showing log"></p>
 <p>The project page also has a section for configuring custom domains.<br>I used my own cloudflare-hosted domain <a href="https://jldec.eu" target="_blank" rel="noopener">jldec.eu</a>.</p>
 <p><img src="./images/cf-pages-custom-domain.png" alt="Cloudflare Pages custom domain"></p>
-<p>Subsequent commits to the GitHub repo trigger a fresh build and deploy.</p>
+<p>Subsequent commits to the GitHub repo trigger a fresh build and re-deploy.</p>
 <p><img src="./images/cf-pages-deployments.png" alt="More deployments"></p>
 <h2 id="github-pages">GitHub Pages</h2>
-<p>For comparison, I set up <a href="https://jldec.uk" target="_blank" rel="noopener">jldec.uk</a> using <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>.</p>
-<p>First I created a new <a href="https://github.com/jldec/jldec.uk/" target="_blank" rel="noopener">jldec.uk repo</a> to host the GitHub Pages site. Since the output can include javascript bundles, fonts, etc., I prefer not to store the output in the same repo as the source.</p>
-<p>I pushed the first generated HTML website to this repo manually, using the output of a local build. The empty <code>.nojekyll</code> file is important to prevent GitHub Pages from triggering a Jekyll build.</p>
+<p>For comparison, I set up <a href="https://jldec.uk" target="_blank" rel="noopener">jldec.uk</a>, another copy of <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a> using <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>.</p>
+<p>First I created a new jldec.uk <a href="https://github.com/jldec/jldec.uk/" target="_blank" rel="noopener">repo</a> to host the GitHub Pages site. Since the output includes javascript bundles, fonts, etc., I prefer to keep it separate from the source.</p>
+<p>I pushed the first generated website to this repo manually, using the output of a local build. The empty <code>.nojekyll</code> file is important to a Jekyll build on GitHub.</p>
 <p><img src="./images/gh-pages-repo.png" alt="GitHub Pages repo"></p>
-<p>Next I configured GitHub Pages in the repo settings.<br>(<em>... always nice to use a feature you <a href="https://github.blog/2016-08-17-simpler-github-pages-publishing/" target="_blank" rel="noopener">helped build</a></em>.)</p>
+<p>Next I configured GitHub Pages in the repo settings (<a href="https://github.blog/2016-08-17-simpler-github-pages-publishing/" target="_blank" rel="noopener">...looks familiar 😃</a>)</p>
 <p><img src="./images/gh-pages-settings.png" alt="GitHub Pages settings"></p>
 <p>Finally I set up a <a href="https://github.com/jldec/cloudflare-pages-test/blob/main/.github/workflows/generate.yaml" target="_blank" rel="noopener">GitHub Action</a> to auto-build and auto-deploy the website when the source changes. This is triggered on push, does a checkout of both repos, and commits the new generated output, only when there are actual changes.</p>
 <pre><code class="language-yaml">on:
