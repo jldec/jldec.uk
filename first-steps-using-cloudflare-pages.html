@@ -58,13 +58,15 @@
 
 <div >
 <div data-render-html="/first-steps-using-cloudflare-pages"><h2 id="jldecme">jldec.me</h2>
-<p>My personal blog, <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a>, is hosted on <a href="https://netlify.com" target="_blank" rel="noopener">Netlify</a>. Whenever I change markdown files on GitHub, Netlify runs a build and publishes the modified HTML.</p>
-<p>Cloudflare recently <a href="https://blog.cloudflare.com/cloudflare-pages/" target="_blank" rel="noopener">announced</a> the introduction of <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener">Cloudflare Pages</a>, and I was lucky enough to be given access to the Beta.</p>
-<h2 id="cloudflare-pages">Cloudflare Pages</h2>
+<p>My personal blog, <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a>, is hosted on <a href="https://netlify.com" target="_blank" rel="noopener">Netlify</a>. Whenever I push markdown to GitHub, Netlify runs a build and publishes the HTML.</p>
+<p>Cloudflare recently <a href="https://blog.cloudflare.com/cloudflare-pages/" target="_blank" rel="noopener">announced</a> a similar offering called <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener">Cloudflare Pages</a>. I was lucky enough to be given access to the Beta.</p>
 <p>This is a walkthrough of setting up <a href="https://jldec.eu" target="_blank" rel="noopener">jldec.eu</a>, a copy of <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a>, on Cloudflare Pages.</p>
+<h2 id="cloudflare-pages-beta">Cloudflare Pages (Beta)</h2>
 <p>If you have access to Cloudflare Pages, you will see this button when you login to Cloudflare.</p>
 <p><img src="./images/cf-pages-beta.png" alt="Cloudflare Pages Beta button on dashboard"></p>
-<p>This takes you to a GitHub form for granting repo access to the &#39;Cloudflare Pages&#39; GitHub app. (<em>Look for it later in your <a href="https://github.com/settings/installations" target="_blank" rel="noopener">GitHub Settings</a> to add more repos, or to revoke access.</em>)</p>
+<p>The Pages button takes to your Pages projects -- of which there are none at first -- and a button to <code>Create a project</code>.</p>
+<p><img src="./images/cf-pages-create-a-project.png" alt="Pages - Create a project"></p>
+<p> This opens the GitHub form for granting repo access to the &#39;Cloudflare Pages&#39; GitHub app. (<em>Look for it later in your <a href="https://github.com/settings/installations" target="_blank" rel="noopener">GitHub Settings</a> to add more repos, or to revoke access.</em>)</p>
 <p><img src="./images/cf-pages-github-app.png" alt="Authorize Cloudflare Pages app on GitHub"></p>
 <p>Back on Cloudflare, you can choose the repo for your new Cloudflare Pages project.<br><a href="https://github.com/jldec/cloudflare-pages-test" target="_blank" rel="noopener">cloudflare-pages-test</a> is a copy of my markdown source repo from <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a>.</p>
 <p><img src="./images/cf-pages-select-repo.png" alt="Select repo for the Cloudflare Pages project"></p>
@@ -72,9 +74,9 @@
 <p><img src="./images/cf-pages-configure-build.png" alt="Configure the build command and output directory"></p>
 <p>Submitting the form, triggers the first build and shows the log.</p>
 <p><img src="./images/cf-pages-build-log.png" alt="First build and deploy showing log"></p>
-<p>The project page also has a section for configuring custom domains.<br>I used my own cloudflare-hosted domain <a href="https://jldec.eu" target="_blank" rel="noopener">jldec.eu</a>.</p>
+<p>The project page also has a section for configuring custom domains. I used my own cloudflare-hosted domain <a href="https://jldec.eu" target="_blank" rel="noopener">jldec.eu</a>. The <a href="https://developers.cloudflare.com/pages/getting-started#add-a-custom-cname-record" target="_blank" rel="noopener">docs</a> can be a little confusing here. My CNAME points to <code>cloudflare-pages-test.pages.dev</code> not <code>custom.pages.dev</code>.</p>
 <p><img src="./images/cf-pages-custom-domain.png" alt="Cloudflare Pages custom domain"></p>
-<p>Subsequent commits to the GitHub repo trigger a fresh build and re-deploy.</p>
+<p>You can visit the deployed site at <a href="https://jldec.eu" target="_blank" rel="noopener">jldec.eu</a>. 🇪🇺<br>Subsequent commits to this GitHub <a href="https://github.com/jldec/cloudflare-pages-test" target="_blank" rel="noopener">repo</a> will trigger a fresh build and re-deploy.</p>
 <p><img src="./images/cf-pages-deployments.png" alt="More deployments"></p>
 <h2 id="github-pages">GitHub Pages</h2>
 <p>For comparison, I set up <a href="https://jldec.uk" target="_blank" rel="noopener">jldec.uk</a>, another copy of <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a> using <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>.</p>
@@ -83,7 +85,8 @@
 <p><img src="./images/gh-pages-repo.png" alt="GitHub Pages repo"></p>
 <p>Next I configured GitHub Pages in the repo settings (<a href="https://github.blog/2016-08-17-simpler-github-pages-publishing/" target="_blank" rel="noopener">...looks familiar 😃</a>)</p>
 <p><img src="./images/gh-pages-settings.png" alt="GitHub Pages settings"></p>
-<p>Finally I set up a <a href="https://github.com/jldec/cloudflare-pages-test/blob/main/.github/workflows/generate.yaml" target="_blank" rel="noopener">GitHub Action</a> to auto-build and auto-deploy the website when the source changes. This is triggered on push, does a checkout of both repos, and commits the new generated output, only when there are actual changes.</p>
+<p>You can visit the deployed site at <a href="https://jldec.uk" target="_blank" rel="noopener">jldec.uk</a>. 🇬🇧  </p>
+<p>Finally I set up <a href="https://github.com/jldec/cloudflare-pages-test/blob/main/.github/workflows/generate.yaml" target="_blank" rel="noopener">GitHub Actions</a> to auto-build and auto-deploy the website when the source changes. This is triggered on push, does a checkout of both repos, and commits the new generated output, only when there are actual changes.</p>
 <pre><code class="language-yaml">on:
   push:
     branches: [ main ]
@@ -118,12 +121,13 @@ jobs:
         if ! git diff-index --quiet HEAD ; then git commit -m &#39;https://github.com/jldec/cloudflare-pages-test/actions/runs/${{ github.run_id }}&#39; &amp;&amp; git push ; fi
         echo done
 </code></pre>
-<p>This git log from the output repo shows a <a href="https://github.com/jldec/jldec.uk/commit/2422284dc9ab968c3fe364d7efba7453ea185d8a" target="_blank" rel="noopener">commit</a> from the action with 4 modified files.</p>
-<p><img src="./images/gh-pages-commit.png" alt="GitHub Pages repo commit log with 4 files changed"></p>
+<p>Preserving the HTML site in git is useful for all kinds of reasons. E.g. here is part of a diff from a recent <a href="https://github.com/jldec/jldec.uk/commit/0efb3e73ea2de797f9201b69803c70299be05a28" target="_blank" rel="noopener">commit</a>.</p>
+<p><img src="./images/gh-pages-diff.png" alt="GitHub Pages diff"></p>
 <h2 id="conclusions">Conclusions</h2>
-<p>The developer experience of hosting a site with CloudFlare Pages is quite similar to Netlify.</p>
-<p>At the moment the Cloudflare Pages Beta does not support redirects and functions, but those are expected with the integration of Cloudflare Workers.</p>
-<p>GitHub Pages is more work, and requires knowledge of GitHub Actions if you&#39;re not using Jekyll. There are other gotchas if you want to support concurrent builds or preview builds.</p>
+<p>The developer experience of hosting a site with CloudFlare Pages is very similar to Netlify.</p>
+<p>The Cloudflare Pages Beta does not yet support redirects and functions, but those are expected with the integration of <a href="https://workers.cloudflare.com" target="_blank" rel="noopener">Cloudflare Workers</a>.</p>
+<p>Automating builds and deploys onto GitHub Pages is more work, and requires knowledge of GitHub Actions if you&#39;re not using Jekyll. There are other gotchas with GitHub Actions if you want to support concurrent builds or preview builds.</p>
+<p>Cloudflare Pages <a href="https://pages.cloudflare.com/#pricing" target="_blank" rel="noopener">pricing</a> currently goes up with build count and build concurrency, but not traffic. This opens the door for use-cases like CDN hosting of front-end modules, which can be prohibitive on other metered services like <a href="https://www.netlify.com/pricing/#features" target="_blank" rel="noopener">Netlify</a>.</p>
 <blockquote>
 <p>The performance of all 3 platforms is excellent since they all serve static files from a CDN<br>🏃‍♀️</p>
 </blockquote>
