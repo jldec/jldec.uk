@@ -60,6 +60,7 @@
 <div data-render-html="/first-steps-using-cloudflare-pages"><h2 id="jldecme">jldec.me</h2>
 <p>My personal blog, <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a>, is hosted on <a href="https://netlify.com" target="_blank" rel="noopener">Netlify</a>. Whenever I push markdown to GitHub, Netlify runs a build and publishes the HTML.</p>
 <p>Cloudflare recently <a href="https://blog.cloudflare.com/cloudflare-pages/" target="_blank" rel="noopener">announced</a> a similar offering called <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener">Cloudflare Pages</a>. I was lucky enough to be given access to the Beta.</p>
+<p>Unlike <a href="https://www.netlify.com/pricing/#features" target="_blank" rel="noopener">Netlify</a>, Cloudflare Pages <a href="https://pages.cloudflare.com/#pricing" target="_blank" rel="noopener">does not meter</a> request traffic. This opens the door for use-cases like CDN hosting of open source <a href="https://jldec.me/migrating-from-cjs-to-esm" target="_blank" rel="noopener">ESM modules</a> 🤔.</p>
 <p>This is a walkthrough of setting up <a href="https://jldec.eu" target="_blank" rel="noopener">jldec.eu</a>, a copy of <a href="https://jldec.me" target="_blank" rel="noopener">jldec.me</a>, on Cloudflare Pages.</p>
 <h2 id="cloudflare-pages-beta">Cloudflare Pages (Beta)</h2>
 <p>If you have access to Cloudflare Pages, you will see this button when you login to Cloudflare.</p>
@@ -127,7 +128,6 @@ jobs:
 <p>The developer experience of hosting a site with CloudFlare Pages is very similar to Netlify.</p>
 <p>The Cloudflare Pages Beta does not yet support redirects and functions, but those are expected with the integration of <a href="https://workers.cloudflare.com" target="_blank" rel="noopener">Cloudflare Workers</a>.</p>
 <p>Automating builds and deploys onto GitHub Pages is more work, and requires knowledge of GitHub Actions if you&#39;re not using Jekyll. There are other gotchas with GitHub Actions if you want to support concurrent builds or preview builds.</p>
-<p>Cloudflare Pages <a href="https://pages.cloudflare.com/#pricing" target="_blank" rel="noopener">pricing</a> currently goes up with build count and build concurrency, but request traffic is not metered. This opens the door for use-cases like CDN hosting of open source <a href="https://jldec.me/migrating-from-cjs-to-esm" target="_blank" rel="noopener">ESM modules</a>, which can be prohibitive on metered services like <a href="https://www.netlify.com/pricing/#features" target="_blank" rel="noopener">Netlify</a>.</p>
 <blockquote>
 <p>The performance of all 3 platforms is excellent since they all serve static files from a CDN<br>🏃‍♀️</p>
 </blockquote>
