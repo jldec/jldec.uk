@@ -122,6 +122,8 @@ jobs:
         if ! git diff-index --quiet HEAD ; then git commit -m &#39;https://github.com/jldec/cloudflare-pages-test/actions/runs/${{ github.run_id }}&#39; &amp;&amp; git push ; fi
         echo done
 </code></pre>
+<p>Now every push triggers a new build and re-deploy.</p>
+<p><img src="./images/gh-pages-builds.png" alt="GitHub Pages builds using GitHub Actions"></p>
 <p>Preserving the HTML site in git is useful for all kinds of reasons. E.g. here is part of a diff from a recent <a href="https://github.com/jldec/jldec.uk/commit/0efb3e73ea2de797f9201b69803c70299be05a28" target="_blank" rel="noopener">commit</a>.</p>
 <p><img src="./images/gh-pages-diff.png" alt="GitHub Pages diff"></p>
 <h2 id="conclusions">Conclusions</h2>
