@@ -59,31 +59,46 @@
 
 <div >
 <div data-render-html="/fun-with-vercel"><h2 id="vercel">Vercel</h2>
-<p>Last week I wrote about <a href="first-steps-using-cloudflare-pages">First Steps Using Cloudflare Pages</a>. That included a comparison with <a href="https://docs.github.com/en/github/working-with-github-pages/about-github-pages" target="_blank" rel="noopener">GitHub Pages</a> and also talked about <a href="https://www.netlify.com/products/" target="_blank" rel="noopener">Netlify</a>.</p>
-<p><a href="https://vercel.com/home" target="_blank" rel="noopener">Vercel</a> is another interesting participant in the trend toward static hosting, preview builds, serverless, and <a href="./why-serverless-at-the-edge">edge compute</a>.</p>
+<p>Last week I wrote about <a href="first-steps-using-cloudflare-pages">First Steps Using Cloudflare Pages</a>.</p>
+<p><a href="https://vercel.com/home" target="_blank" rel="noopener">Vercel</a> is another leader in the trend toward static hosting, serverless, and <a href="./why-serverless-at-the-edge">edge compute</a>.</p>
 <h2 id="jldecfun-🤪"><a href="https://jldec.fun/fun-with-vercel" target="_blank" rel="noopener">jldec.fun</a> 🤪</h2>
-<p>This is a walkthough of deploying <a href="https://jldec.fun/" target="_blank" rel="noopener">jldec.fun</a> with Vercel. Markdown source files live on <a href="https://github.com/jldec/cloudflare-pages-test" target="_blank" rel="noopener">GitHub</a>.</p>
-<p>The Vercel signup starts a New Project workflow <em>(which could be simplified.)</em> 😁</p>
+<p>This is a walkthough of how I deployed <a href="https://jldec.fun/" target="_blank" rel="noopener">jldec.fun</a> using the <a href="https://vercel.com/docs" target="_blank" rel="noopener">Vercel platform</a>.</p>
+<p>Markdown source files live in the same repo on <a href="https://github.com/jldec/cloudflare-pages-test" target="_blank" rel="noopener">GitHub</a> as before.</p>
+<p>The Vercel signup starts a New Project workflow <em>(this could be simplified.)</em></p>
 <p><img src="./images/vercel-new-project.png" alt="Vercel new project workflow with link to GitHub"></p>
-<p>Choose the first option in the dropdown.</p>
+<p>&#39;Continue with GitHub&#39;, then choose the first option in the dropdown.</p>
 <p><img src="./images/vercel-add-github-account.png" alt="Vercel add GitHub account dropdown"></p>
 <p>This leads to the GitHub form for granting repo access to the &#39;Vercel&#39; GitHub app. (<em>Look for it later in your <a href="https://github.com/settings/installations" target="_blank" rel="noopener">GitHub Settings</a> to add more repos, or to revoke access.</em>)</p>
 <p><img src="./images/vercel-github-app.png" alt="Authorize Vercel app on GitHub"></p>
-<p>Back on Vercel, select a repo, and confirm the project scope. Team scope requires a paid plan.</p>
+<p>Back on Vercel, select a repo and confirm the project scope. Team scope requires a paid plan.</p>
 <p><img src="./images/vercel-select-project-scope.png" alt="Select scope for the new project"></p>
 <p>Select the project directory within the repo - usually this will be the root.</p>
 <p><img src="./images/vercel-select-directory.png" alt="Select project direcotry inside repo"></p>
-<p>The project name defaults to the name of the repo. I configured a build command and the output directory. I didn&#39;t really want encrypted <a href="https://vercel.com/docs/environment-variables" target="_blank" rel="noopener">environment variables</a> here, so I made a note to go back to change this setting later.</p>
+<p>In the last form of the Import Project flow, Project Name defaults to the name of the repo, so I changed that to &#39;jldec-fun&#39;. I also configured a build command and an output directory.</p>
+<p>I didn&#39;t really need encrypted <a href="https://vercel.com/docs/environment-variables" target="_blank" rel="noopener">environment variables</a> here, but this step doesn&#39;t offer an alternative, so I made a note to change it later.</p>
 <p><img src="./images/vercel-configure-build-jldec-fun.png" alt="Configure the build command and output directory"></p>
-<p>Submitting the form, triggered the first build followed by a confetti shower. 🎉</p>
+<p>Submitting the form triggered the first build, followed by a nice confetti shower. 🎉</p>
 <p><img src="./images/vercel-confetti-jldec-fun.png" alt="First build and deploy confetti celebration"></p>
-<p>I fixed the environment variables in the dashboard.</p>
+<p>Unfortunately, visiting the site revealed a problem. Vercel does not automatically serve files stored with an &#39;.html&#39; extension, when a request comes in <em>without</em> any extension.</p>
+<p><img src="./images/vercel-without-clean-url-setting.png" alt="Page not found when trying to browse toURL without extension"></p>
+<p>The fix requires <a href="https://vercel.com/docs/configuration#project/clean-urls" target="_blank" rel="noopener">cleanUrls</a> to be set in the <code>vercel.json</code> file at the project root.</p>
+<pre><code class="language-json">{
+  &quot;cleanUrls&quot;: true
+}
+</code></pre>
+<p>Adding this setting fixed my 404 problem.</p>
+<p>The same config file would also be useful for other common static hosting requirements like <a href="https://vercel.com/docs/configuration#project/redirects" target="_blank" rel="noopener">redirects</a>, HTTP <a href="https://vercel.com/docs/configuration#project/headers" target="_blank" rel="noopener">headers</a>, and the treatment of URLs with a <a href="https://vercel.com/docs/configuration#project/trailing-slash" target="_blank" rel="noopener">trailing slash</a>.</p>
+<p>Back in the well-designed Vercel Settings UI, I was able to change my environment variables to plaintext. I liked the ability to set different values for preview builds.</p>
 <p><img src="./images/vercel-environment-settings.png" alt="Dashboard environment settings"></p>
-<p>When I added my domain, the form helpfully recommended configuring an IP address.</p>
+<p>When I added my domain name, the form helpfully recommended configuring an IP address.</p>
 <p><img src="./images/vercel-domain-setting.png" alt="Dashboard domain settings"></p>
-<p>Once the DNS record was in place, the invalid configuration was resolved.</p>
+<p>Once the DNS record was in place, the domain configuration changed to &#39;Valid&#39;.</p>
 <p><img src="./images/vercel-domain-setting-fixed.png" alt="Dashboard domain settings fixed"></p>
-<p><a href="https://jldec.fun/fun-with-vercel" target="_blank" rel="noopener">jldec.fun</a> is deployed from <code>main</code>. Commits to any other branch will trigger a preview deployment on a different URL.</p>
+<blockquote>
+<p>Tada!</p>
+</blockquote>
+<p><a href="https://jldec.fun/fun-with-vercel" target="_blank" rel="noopener">jldec.fun</a> is deployed from the <code>main</code> branch on <a href="https://github.com/jldec/cloudflare-pages-test" target="_blank" rel="noopener">GitHub</a>. Commits to any other branch will trigger a preview deployment on a different URL.</p>
+<p><img src="./images/vercel-post.png" alt="screenshot of jldec.fun"></p>
 <blockquote>
 <p>Static websites are awesome!<br><span class="fa fa-2x">&#xf087;</span></p>
 </blockquote>
