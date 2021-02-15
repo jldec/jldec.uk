@@ -64,7 +64,8 @@
 <blockquote>
 <p>WebAssembly (abbreviated wasm) is a safe, portable, low-level code format designed for efficient execution and compact representation.</p>
 </blockquote>
-<p>Rust is a popular language for writing code compiled to WebAssembly. This is not just because of Rust&#39;s minimal runtime needs, but also because of its community and <a href="./forays-from-node-to-rust#first-impressions">tools</a>.</p>
+<p>WebAssembly is the first new runnable format supported by all major browsers. It is also showing promise as a standardized way to deploy code to edge environments.</p>
+<p>Rust is a popular language for writing code compiled to WebAssembly. This is not just because of Rust&#39;s minimal runtime needs, but also because of its community and <a href="https://jldec.me/forays-from-node-to-rust#first-impressions" target="_blank" rel="noopener">tools</a>.</p>
 <h2 id="cloudflare-workers">Cloudflare Workers</h2>
 <p><a href="#">Cloudflare Workers</a> offers a low-cost, low-latency, serverless platform, making it an ideal complement for statically generated websites. Cloudflare Workers use <a href="https://github.com/v8/v8#readme" target="_blank" rel="noopener">V8</a>, the same open source JavaScript engine from Google which is used in <a href="https://nodejs.org/en/about/" target="_blank" rel="noopener">Node.js</a> and <a href="https://deno.land/" target="_blank" rel="noopener">Deno</a>.</p>
 <p>The <a href="https://developers.cloudflare.com/workers/runtime-apis" target="_blank" rel="noopener">APIs</a> available to Cloudflare Workers are very limited - Unlike Node, there is no module loader and no access to the host platform.</p>
@@ -105,7 +106,7 @@
 <p>Now browse to <a href="http://127.0.0.1:8787" target="_blank" rel="noopener">http://127.0.0.1:8787</a></p>
 <p><img src="./images/hello-wasm-worker.png" alt="&#39;Hello wasm-worker!&#39; appears in the browser"></p>
 <h2 id="modifications">Modifications</h2>
-<p>For learning purposes, I prefer to pare sample code down to a minimum.</p>
+<p>For learning purposes, I pared the code down and pushed it to <a href="https://github.com/jldec/wasm-worker" target="_blank" rel="noopener">jldec/wasm-worker</a>.</p>
 <ul>
 <li>Removed unused files: <code>.appveyor.yml</code>, <code>.travis.yml</code>, <code>.cargo-ok</code></li>
 <li>Removed <code>worker/metadata_wasm.json</code> - no longer used by wrangler</li>
