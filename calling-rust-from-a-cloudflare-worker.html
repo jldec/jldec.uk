@@ -80,7 +80,7 @@
 <pre><code class="language-sh">$ wrangler generate wasm-worker -t rust
 </code></pre>
 <pre><code>🔧   Creating project called `wasm-worker`...
-✨   Done! New project created /Users/jleschner/tmp/wasm-worker
+✨   Done! New project created ./wasm-worker
 🕵️  You will need to update the following fields in the created wrangler.toml file before continuing:
 🕵️  You can find your account_id in the right sidebar of your account&#39;s Workers page, and zone_id in the right sidebar of a zone&#39;s overview tab at https://dash.cloudflare.com
 - account_id
@@ -93,13 +93,13 @@
 [INFO]: 🎯  Checking for the Wasm target...
 [INFO]: 🌀  Compiling to Wasm...
 ...
-   Compiling wasm-worker v0.1.0 (/Users/jleschner/tmp/wasm-worker)
+   Compiling wasm-worker v0.1.0
     Finished release [optimized] target(s) in 12.43s
 [INFO]: ⬇️  Installing wasm-bindgen...
 [INFO]: Optimizing wasm binaries with `wasm-opt`...
 [INFO]: Optional fields missing from Cargo.toml: &#39;description&#39;, &#39;repository&#39;, and &#39;license&#39;. These are not necessary, but recommended
 [INFO]: ✨   Done in 13.03s
-[INFO]: 📦   Your wasm pkg is ready to publish at /Users/jleschner/tmp/wasm-worker/pkg.
+[INFO]: 📦   Your wasm pkg is ready to publish at wasm-worker/pkg.
 💁  watching &quot;./&quot;
 👂  Listening on http://127.0.0.1:8787
 </code></pre>
@@ -164,7 +164,7 @@ async function handleRequest(request) {
 [INFO]: ⬇️  Installing wasm-bindgen...
 [INFO]: Optimizing wasm binaries with `wasm-opt`...
 [INFO]: ✨   Done in 0.47s
-[INFO]: 📦   Your wasm pkg is ready to publish at /Users/jleschner/pub/wasm-worker/pkg.
+[INFO]: 📦   Your wasm pkg is ready to publish at wasm-worker/pkg.
 ✨  Build succeeded
 ✨  Successfully published your script to
  jldec.net/wasm-worker* =&gt; stayed the same
