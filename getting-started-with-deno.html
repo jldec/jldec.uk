@@ -94,7 +94,7 @@ console.table(buf);
 <p>The Deno <a href="https://deno.land/std" target="_blank" rel="noopener">Standard Library</a> is largely written in TypeScript, as are the declarations (and auto-generated docs) for <a href="https://doc.deno.land/builtin/stable" target="_blank" rel="noopener">built-ins</a>, so it helps to know a little TypeScript syntax even if you prefer to write JavaScript.</p>
 <p>I find the TypeScript declarations most useful for code completion in VS Code.</p>
 <h2 id="scanjs">scan.js</h2>
-<p>In the spirit of leveraging Deno as a web client, I decided to try building a simple link validator. This requires a 3rd-party library to parse HTML, making it an exercise in how to use ESM modules in Deno.</p>
+<p>In the spirit of leveraging Deno as a web client, I decided to try building a simple link validator. This requires a 3rd-party library to parse HTML.</p>
 <p>I started my search assuming that a popular npm module would be my best bet, even if it wasn&#39;t available (yet) in <a href="https://deno.land/x" target="_blank" rel="noopener">deno.land/x</a> which is where library authors can register their GitHub repos to publish deno-compatible ESM modules.</p>
 <p>After some googling, I landed on <a href="https://github.com/inikulin/parse5" target="_blank" rel="noopener">parse5</a> which enjoys wide usage and offers a simple, low-level tree API at its core.</p>
 <p>I had also heard about <a href="https://docs.skypack.dev/skypack-cdn/code/deno" target="_blank" rel="noopener">Skypack</a>, a CDN, specifically designed to serve npm packages as ESM modules. A quick search on <a href="https://www.skypack.dev/" target="_blank" rel="noopener">skypack.dev</a> and I had a URL for the parse5 module which works in Deno.</p>
