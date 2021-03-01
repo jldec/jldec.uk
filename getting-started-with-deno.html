@@ -98,7 +98,7 @@ console.table(buf);
 <p>I started my search assuming that a popular npm module would be my best bet, even if it wasn&#39;t available (yet) in <a href="https://deno.land/x" target="_blank" rel="noopener">deno.land/x</a> which is where library authors can register their GitHub repos to publish deno-compatible ESM modules.</p>
 <p>After some googling, I landed on <a href="https://github.com/inikulin/parse5" target="_blank" rel="noopener">parse5</a> which enjoys wide usage and offers a simple, low-level tree API at its core.</p>
 <p>I had also heard about <a href="https://docs.skypack.dev/skypack-cdn/code/deno" target="_blank" rel="noopener">Skypack</a>, a CDN, specifically designed to serve npm packages as ESM modules. A quick search on <a href="https://www.skypack.dev/" target="_blank" rel="noopener">skypack.dev</a> and I had a URL for the parse5 module which works in Deno.</p>
-<p>The code in <a href="https://github.com/jldec/deno-hello/tree/main/hello.js" target="_blank" rel="noopener">scan.js</a> crawls a website, validating that all the links on the site which point to the same origin can be fetched.</p>
+<p>The code in <a href="https://github.com/jldec/deno-hello/blob/main/scan.js" target="_blank" rel="noopener">scan.js</a> crawls a website, validating that all the links on the site which point to the same origin can be fetched.</p>
 <pre><code class="language-js">import parse5 from &#39;https://cdn.skypack.dev/parse5?dts&#39;;
 
 const rootUrl = Deno.args[0];
