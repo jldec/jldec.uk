@@ -94,9 +94,9 @@ console.table(buf);
 <p>The Deno <a href="https://deno.land/std" target="_blank" rel="noopener">Standard Library</a> is largely written in TypeScript, as are the declarations (and auto-generated docs) for <a href="https://doc.deno.land/builtin/stable" target="_blank" rel="noopener">built-ins</a>, so it helps to know a little TypeScript syntax even if you prefer to write JavaScript.</p>
 <p>I find the TypeScript declarations most useful for code completion in VS Code.</p>
 <h2 id="scanjs">scan.js</h2>
-<p>In the spirit of leveraging Deno as a web client, I decided to try building a simple link validator. This requires a 3rd-party library to parse HTML, so it would also serve as a primer on using ESM modules in Deno.</p>
+<p>In the spirit of leveraging Deno as a web client, I decided to try building a simple link validator. This requires a 3rd-party library to parse HTML, making it an exercise in how to use ESM modules in Deno.</p>
 <p>I started my search assuming that a popular npm module would be my best bet, even if it wasn&#39;t available (yet) in <a href="https://deno.land/x" target="_blank" rel="noopener">deno.land/x</a> which is where library authors can register their GitHub repos to publish deno-compatible ESM modules.</p>
-<p>After some googling, I landed on <a href="https://github.com/inikulin/parse5" target="_blank" rel="noopener">parse5</a> which appeared to have wide usage and offered a simple, low-level tree API at its core.</p>
+<p>After some googling, I landed on <a href="https://github.com/inikulin/parse5" target="_blank" rel="noopener">parse5</a> which enjoys wide usage and offers a simple, low-level tree API at its core.</p>
 <p>I had also heard about <a href="https://docs.skypack.dev/skypack-cdn/code/deno" target="_blank" rel="noopener">Skypack</a>, a CDN, specifically designed to serve npm packages as ESM modules. A quick search on <a href="https://www.skypack.dev/" target="_blank" rel="noopener">skypack.dev</a> and I had a URL for the parse5 module which works in Deno.</p>
 <p>The code in <a href="https://github.com/jldec/deno-hello/tree/main/hello.js" target="_blank" rel="noopener">scan.js</a> crawls a website, validating that all the links on the site which point to the same origin can be fetched.</p>
 <pre><code class="language-js">import parse5 from &#39;https://cdn.skypack.dev/parse5?dts&#39;;
@@ -134,7 +134,13 @@ async function checkUrl(url, base) {
       // fetch from href
       urlMap[href] = &#39;pending&#39;;
       const res = await fetch(href);
-      if (!res.ok) return urlMap[href] = { status: res.status, in: base }
+
+      // bail out if fetch was not ok
+      if (!res.ok) {
+        urlMap[href] = { status: res.status, in: base };
+        return;
+      }
+
       urlMap[href] = &#39;OK&#39;;
 
       // parse response
@@ -196,7 +202,7 @@ parsing /why-the-web-needs-better-html-editing-components
 </code></pre>
 <p>NOTE: For this first implementation, there is no queueing, so I would not recommend pointing it at large site.</p>
 <h2 id="compiling">Compiling</h2>
-<p>The deno experience is still a little rough in places, but one new feature which I really like, is the ability to <a href="https://deno.land/manual/tools/compiler" target="_blank" rel="noopener">compile</a> a script into a self-contained executable.</p>
+<p>The deno experience still feels a little rough in places, but one new feature which I really like, is the ability to <a href="https://deno.land/manual/tools/compiler" target="_blank" rel="noopener">compile</a> a script into a self-contained executable.</p>
 <pre><code class="language-sh">$ deno --unstable compile --allow-net scan.js
 Bundle file:./scan.js
 Compile file:./scan.js
