@@ -75,20 +75,21 @@ export PATH=${PATH}:${DENO_DIR}/bin
 <p><img src="./images/deno-debug-dark.png" alt="VS Code Deno extension Debug"></p>
 <h2 id="hellojs">hello.js</h2>
 <p>Here is <a href="https://github.com/jldec/deno-hello/tree/main/hello.js" target="_blank" rel="noopener">hello.js</a>, my first Deno program. You can run it with <code>deno run hello.js args...</code></p>
-<pre><code class="language-js">const hello = &#39;Hello Deno&#39;;
+<pre><code class="language-js">const hello = &quot;Hello Deno&quot;;
 console.log(`${hello} %s hello %o`, new Date(), Deno.args);
 
-const buf = new TextEncoder().encode(&#39;-🦀-\n&#39;);
+const buf = new TextEncoder().encode(&quot;-🦀-\n&quot;);
 await Deno.stdout.write(buf);
 console.table(buf);
 </code></pre>
 <p>The easiest way to write to stdout is by using the built-in console.log().</p>
+<p>For those curious about Deno internals:</p>
 <ul>
 <li>The global <code>console</code> object is created in <a href="https://github.com/denoland/deno/blob/v1.7.5/runtime/js/99_main.js#L246" target="_blank" rel="noopener">runtime/js/99_main.js</a>.</li>
 <li>The <code>console.log()</code> method lives in <a href="https://github.com/denoland/deno/blob/v1.7.5/runtime/js/02_console.js#L1503" target="_blank" rel="noopener">runtime/js/02_console.js</a>.</li>
 <li>This calls the rust function <code>core.print</code> in <a href="https://github.com/denoland/deno/blob/v1.7.5/core/bindings.rs#L277" target="_blank" rel="noopener">core/bindings.rs</a>.</li>
 </ul>
-<p><a href="#">Deno.stdout</a> provides a lower level stream interface. Notice the top-level <code>await</code> on the promise returned by &#39;Deno.stdout.write()&#39;.</p>
+<p><a href="#">Deno.stdout</a> provides a lower level stream interface. Notice the <code>await</code> on the promise returned by &#39;Deno.stdout.write()&#39;.</p>
 <h3 id="typescript">Typescript</h3>
 <p>The code above is also valid <a href="https://www.typescriptlang.org/" target="_blank" rel="noopener">TypeScript</a>. Since Deno includes a built-in TypeScript compiler, you could simply rename hello.js to hello.ts and it would work the same way.</p>
 <p>The Deno <a href="https://deno.land/std" target="_blank" rel="noopener">Standard Library</a> is largely written in TypeScript, as are the declarations (and auto-generated docs) for <a href="https://doc.deno.land/builtin/stable" target="_blank" rel="noopener">built-ins</a>, so it helps to know a little TypeScript syntax even if you prefer to write JavaScript.</p>
@@ -99,22 +100,22 @@ console.table(buf);
 <p>After some googling, I landed on <a href="https://github.com/inikulin/parse5" target="_blank" rel="noopener">parse5</a> which enjoys wide usage and offers a simple, low-level tree API at its core.</p>
 <p>I had also heard about <a href="https://docs.skypack.dev/skypack-cdn/code/deno" target="_blank" rel="noopener">Skypack</a>, a CDN, specifically designed to serve npm packages as ESM modules. A quick search on <a href="https://www.skypack.dev/" target="_blank" rel="noopener">skypack.dev</a> and I had a URL for the parse5 module which works in Deno.</p>
 <p>The code in <a href="https://github.com/jldec/deno-hello/blob/main/scan.js" target="_blank" rel="noopener">scan.js</a> crawls a website, validating that all the links on the site which point to the same origin can be fetched.</p>
-<pre><code class="language-js">import parse5 from &#39;https://cdn.skypack.dev/parse5?dts&#39;;
+<pre><code class="language-js">import parse5 from &quot;https://cdn.skypack.dev/parse5?dts&quot;;
 
 const rootUrl = Deno.args[0];
-if (!rootUrl) exit(1, &#39;Please provide a URL&#39;);
+if (!rootUrl) exit(1, &quot;Please provide a URL&quot;);
 
-const rootOrigin = (new URL(rootUrl)).origin;
+const rootOrigin = new URL(rootUrl).origin;
 
 const urlMap = {}; // tracks visited urls
 
 await checkUrl(rootUrl);
-const result = Object.entries(urlMap).filter( kv =&gt; kv[1] !== &#39;OK&#39;);
+const result = Object.entries(urlMap).filter((kv) =&gt; kv[1] !== &quot;OK&quot;);
 
 if (result.length) {
   exit(1, result);
 } else {
-  exit(0, &#39;🎉 no broken links found.&#39;);
+  exit(0, &quot;🎉 no broken links found.&quot;);
 }
 
 // recursively checks url and same-origin urls inside
@@ -130,9 +131,8 @@ async function checkUrl(url, base) {
 
     // only process same-origin urls
     if (!urlMap[href] &amp;&amp; urlObj.origin === rootOrigin) {
-
       // fetch from href
-      urlMap[href] = &#39;pending&#39;;
+      urlMap[href] = &quot;pending&quot;;
       const res = await fetch(href);
 
       // bail out if fetch was not ok
@@ -141,29 +141,28 @@ async function checkUrl(url, base) {
         return;
       }
 
-      urlMap[href] = &#39;OK&#39;;
+      urlMap[href] = &quot;OK&quot;;
 
       // parse response
-      console.log(&#39;parsing&#39;, urlObj.pathname);
+      console.log(&quot;parsing&quot;, urlObj.pathname);
       const html = await res.text();
       const document = parse5.parse(html);
 
       // scan for &lt;a&gt; tags and call checkURL for each href
       const promises = [];
-      scan(document, &#39;a&#39;, node =&gt; {
-        promises.push(checkUrl(attr(node, &#39;href&#39;), href));
+      scan(document, &quot;a&quot;, (node) =&gt; {
+        promises.push(checkUrl(attr(node, &quot;href&quot;), href));
       });
       await Promise.all(promises);
     }
-  }
-  catch(err) {
-    urlMap[url] =  { error: err.message, in: base };
+  } catch (err) {
+    urlMap[url] = { error: err.message, in: base };
   }
 }
 
 // return value of attr with name for a node
 function attr(node, name) {
-  return node.attrs.find( attr =&gt; attr.name === name )?.value;
+  return node.attrs.find((attr) =&gt; attr.name === name)?.value;
 }
 
 // recursive DOM scan
