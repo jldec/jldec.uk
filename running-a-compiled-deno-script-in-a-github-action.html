@@ -101,7 +101,7 @@
 <p>Both commands are defined as scripts in <a href="https://github.com/jldec/cloudflare-pages-test/blob/main/package.json" target="_blank" rel="noopener">package.json</a>.</p>
 <p><code>curl -LO</code> downloads the Linux binary from the GitHub release. Running curl here gives the preview server time to start listening on port 3001, before commencing the scan.</p>
 <h2 id="success">Success</h2>
-<p>When the <code>scan-linux-x86</code> command finds no broken links in the static site, it exits with 0, allowing the GitHub Action [workflow]<a href="https://github.com/jldec/cloudflare-pages-test/runs/2112253519?check_suite_focus=true#step:4:72" target="_blank" rel="noopener">https://github.com/jldec/cloudflare-pages-test/runs/2112253519?check_suite_focus=true#step:4:72</a>) to continue.</p>
+<p>When the <code>scan-linux-x86</code> command finds no broken links in the static site, it exits with 0, allowing the GitHub Action <a href="https://github.com/jldec/cloudflare-pages-test/runs/2112253519?check_suite_focus=true#step:4:72" target="_blank" rel="noopener">workflow</a> to continue.</p>
 <p><img src="./images/scan-success.png" alt="scan success in GitHub Action log output"></p>
 <p>If there are broken links the workflow will <a href="https://github.com/jldec/cloudflare-pages-test/runs/2106962300?check_suite_focus=true" target="_blank" rel="noopener">fail</a>, and I will hear about it in my inbox :)</p>
 <p><img src="./images/scan-failure.png" alt="scan failure in GitHub Action log output"></p>
