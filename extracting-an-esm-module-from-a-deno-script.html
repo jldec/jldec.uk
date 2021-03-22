@@ -64,13 +64,13 @@
 
 <div >
 <div data-render-html="/extracting-an-esm-module-from-a-deno-script"><p>This is another followup to my recent post about <a href="./getting-started-with-deno">Getting Started with Deno</a>.</p>
-<p>I thought it would make sense extract the crawler code into its own <a href="./migrating-from-cjs-to-esm">ESM module</a> so that it can be used with Node.js or in the browser -- in other words -- not just from Deno.</p>
-<p>The resulting <a href="https://github.com/jldec/deno-hello/blob/main/scanurl.mjs#L18" target="_blank" rel="noopener">API</a> is a bit ugly because it expects fetch and parse5 as parameters, but it does work.</p>
+<p>I thought it would make sense extract the crawler code into its own <a href="./migrating-from-cjs-to-esm">ESM module</a> so that it can also be used with Node.js or in the browser.</p>
+<p>The resulting <a href="https://github.com/jldec/deno-hello/blob/main/scanurl.mjs#L18" target="_blank" rel="noopener">API</a> is a bit ugly because it expects parse5 and fetch as parameters, but it works  .</p>
 <pre><code class="language-js">/**
  * @param {URL} rootURL
  * @param {boolean} noRecurse
  * @param {boolean} quiet
- * @param {function} parse5
+ * @param {function} parse5 - transitive dependency
  * @param {function} fetch - native or npm package
  * @param {Object} fetchOpts options passed to fetch - optional
  * @returns {Object} map of url -&gt; { url, status, in, [error] }
@@ -80,9 +80,15 @@ export default async function scanurl(rootURL, noRecurse, quiet, parse5, fetch, 
 <h2 id="calling-the-esm-module-from-the-browser">Calling the ESM module from the browser</h2>
 <p>You can try running the module from inside your own browser at <a href="https://deno-hello.jldec.me/" target="_blank" rel="noopener">https://deno-hello.jldec.me/</a>.</p>
 <p><a href="https://deno-hello.jldec.me/" target="_blank" rel="noopener"><img src="./images/deno-hello.jldec.me.png" alt="Screenshot of https://deno-hello.jldec.me"></a></p>
-<p>The page also shows how the module is used from the inline script tag.</p>
-<p>Note that the usual browser CORS restrictions also apply to loading ESM modules, and to making fetch API calls.</p>
-<h2 id="using-the-scanode-esm-module-with-node">Using the <a href="https://www.npmjs.com/package/scanode" target="_blank" rel="noopener">scanode</a> ESM module with Node</h2>
+<p>The page shows how to import the module from an inline <code>&lt;script type=&quot;module&quot;&gt;</code>.</p>
+<pre><code class="language-html">&lt;script type=&quot;module&quot; id=&quot;code&quot;&gt;
+import scanurl from &#39;./scanurl.mjs&#39;;
+import parse5 from &#39;https://cdn.skypack.dev/parse5&#39;;
+...
+&lt;/script&gt;
+</code></pre>
+<p>Note that the usual browser CORS restrictions also apply to ESM modules, and to fetch() calls. In this case &#39;scanurl&#39; is imported using a relative path on the same origin, and &#39;parse5&#39; is imported using <a href="https://www.skypack.dev/" target="_blank" rel="noopener">https://www.skypack.dev/</a>.</p>
+<h2 id="using-the-scanode-esm-module-with-node">Using the scanode ESM module with Node</h2>
 <p>I have published <a href="https://www.npmjs.com/package/scanode" target="_blank" rel="noopener">scanode</a> as a package on npm. If you have Node, you can run it with &#39;npx&#39; or install it using &#39;npm install&#39;.</p>
 <pre><code>$ npx scanode http://jldec.me
 npx: installed 3 in 0.987s
@@ -91,7 +97,7 @@ parsing /
 14 pages scanned.
 🎉 no broken links found.
 </code></pre>
-<p>You can also call the module API from your own code as in <a href="https://github.com/jldec/deno-hello/blob/main/node_example/test-scan.js" target="_blank" rel="noopener">node_example/test-scan.js</a>. Notice the imports for &#39;parse5&#39; and &#39;node-fetch&#39;.</p>
+<p>You can also call the module API from your own code as in <a href="https://github.com/jldec/deno-hello/blob/main/node_example/test-scan.js" target="_blank" rel="noopener">node_example/test-scan.js</a>.</p>
 <pre><code class="language-js">import fetch from &#39;node-fetch&#39;;
 import parse5 from &#39;parse5&#39;;
 import scanode from &#39;scanode&#39;;
@@ -103,16 +109,32 @@ const result = await scanode(
   parse5,
   fetch
 );
-
-console.log(Object.values(result));
+</code></pre>
+<p>Notice the imports for &#39;parse5&#39; and &#39;node-fetch&#39;. These are included as dependencies in the <a href="https://github.com/jldec/deno-hello/blob/main/package.json#L9" target="_blank" rel="noopener">package.json</a> for scanode.</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;scanode&quot;,
+  &quot;version&quot;: &quot;2.0.1&quot;,
+  &quot;description&quot;: &quot;ESM module - crawls a website, validating that all the links on the site which point to the same orgin can be fetched.&quot;,
+  &quot;main&quot;: &quot;scanurl.mjs&quot;,
+  &quot;bin&quot;: {
+    &quot;scanode&quot;: &quot;./bin/scanode.mjs&quot;
+  },
+  &quot;dependencies&quot;: {
+    &quot;node-fetch&quot;: &quot;^2.6.1&quot;,
+    &quot;parse5&quot;: &quot;^6.0.1&quot;
+  }
+  ...
 </code></pre>
 <h2 id="so-whats-wrong-with-this-picture">So what&#39;s wrong with this picture?</h2>
-<p>As discussed <a href="./migrating-from-cjs-to-esm">before</a>, the npm ecosystem predates ESM modules, so the two worlds don&#39;t play very nicely together. Node.js programs cannot easily load ESM modules which are not in npm. Meanwhile, browsers know nothing about package.json.</p>
+<p>As discussed <a href="./migrating-from-cjs-to-esm">before</a>, the NPM ecosystem predates ESM modules, so the two worlds don&#39;t play very nicely together. Node.js programs cannot easily load ESM modules which are not in NPM. Meanwhile, browsers know nothing about package.json or the node_modules directory.</p>
+<p>When ESM modules depend on other modules, they use &#39;import&#39; statements with a URL or relative path. Node.js expects those sub-modules to be referenced by their NPM package names.</p>
 <p>The result is that modules which depend on other modules are not portable between the two worlds, without an additional transformation step, or maybe an <a href="https://caniuse.com/import-maps" target="_blank" rel="noopener">import map</a>.</p>
-<p>This is why, for now, the API above expects the <code>parse5</code> module dependency as a parameter.</p>
+<p>And this is why, for now, the API above expects the <code>parse5</code> module dependency as a parameter.</p>
 <blockquote>
-<p>But, where there&#39;s a problem, there&#39;s an opportunity!<br>🚀</p>
+<p>The big question is whether the NPM ecosystem will evolve to support nested ESM modules, or whether some other organization with a workable trust model will emerge to replace it?</p>
 </blockquote>
+<p>Where there&#39;s a problem, there&#39;s an opportunity!</p>
+<h1 id="🚀">🚀</h1>
 </div>
 </div>
 
