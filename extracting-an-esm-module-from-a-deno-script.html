@@ -64,7 +64,7 @@
 
 <div >
 <div data-render-html="/extracting-an-esm-module-from-a-deno-script"><p>This is another followup to my recent post about <a href="./getting-started-with-deno">Getting Started with Deno</a>.</p>
-<p>I thought it would make sense extract the crawler code into its own <a href="./migrating-from-cjs-to-esm">ESM module</a> so that it can also be used with Node.js or in the browser.</p>
+<p>I thought it would make sense to extract the crawler code into its own <a href="./migrating-from-cjs-to-esm">ESM module</a> so that it can also be used with Node.js or in the browser.</p>
 <p>The resulting <a href="https://github.com/jldec/deno-hello/blob/main/scanurl.mjs#L18" target="_blank" rel="noopener">API</a> is a bit ugly because it expects parse5 and fetch as parameters, but it works  .</p>
 <pre><code class="language-js">/**
  * @param {URL} rootURL
