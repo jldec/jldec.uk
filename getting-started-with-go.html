@@ -79,12 +79,12 @@
 
 <div >
 <div data-render-html="/getting-started-with-go"><h2 id="golang">Golang</h2>
-<p>The <a href="https://go.dev/" target="_blank" rel="noopener">Go</a> programming language has become an important tool for developers, particularly for platforms like Kubernetes and Docker.</p>
+<p>The <a href="https://go.dev/" target="_blank" rel="noopener">Go</a> programming language has become an important tool for developers, particularly around platforms like Kubernetes and Docker.</p>
 <p>Go was created at Google by a team whose roots go back to Bell Labs and <a href="https://en.wikipedia.org/wiki/C_(programming_language)" target="_blank" rel="noopener">C</a>. Their <a href="https://talks.golang.org/2012/splash.article" target="_blank" rel="noopener">motivations</a> included fast compilation time, and productive development of large scale distributed systems, handling high volumes of concurrent requests.</p>
 <p>This article describes my experience as a new user of Go, building my first Go library. It follows a learning pattern similar to <a href="./forays-from-node-to-rust">forays from Node to Rust</a>.</p>
 <h2 id="getting-started">Getting started</h2>
 <p>I followed the &#39;hello world&#39; getting started docs at <a href="https://golang.org/doc/tutorial/getting-started#code" target="_blank" rel="noopener">golang.org</a>.</p>
-<p>Instead of depending on the macOS <a href="https://golang.org/doc/manage-install" target="_blank" rel="noopener">installer</a> which copies everything into <code>/usr/local/go</code>, I opted to download the latest release from <a href="https://golang.org/dl/" target="_blank" rel="noopener">https://golang.org/dl/</a> into a versioned <a href="https://golang.org/doc/install/source#goroot" target="_blank" rel="noopener">$GOROOT</a> under my home directory. Here&#39;s what I have in my &#39;.bash_profile&#39;:</p>
+<p>Instead of depending on the macOS <a href="https://golang.org/doc/manage-install" target="_blank" rel="noopener">installer</a> which copies everything into <code>/usr/local/go</code>, I opted to download the latest release from <a href="https://golang.org/dl/" target="_blank" rel="noopener">https://golang.org/dl/</a> into a versioned <a href="https://golang.org/doc/install/source#environment" target="_blank" rel="noopener">$GOROOT</a> under my home directory. Here&#39;s what I have in my &#39;.bash_profile&#39;:</p>
 <pre><code class="language-sh">export GOPATH=~/go
 export GOROOT=~/go1.16.3
 export PATH=${PATH}:${GOROOT}/bin:${GOPATH}/bin
