@@ -101,7 +101,7 @@ func main() {
 </code></pre>
 <p>Notice that <code>var b</code> is an instance of the Builder.</p>
 <h2 id="pointer-receiver-methods-and-interfaces">Pointer receiver methods and interfaces</h2>
-<p>The first argument to Fprintf is <code>&amp;b</code>, a <a href="https://tour.golang.org/moretypes/1" target="_blank" rel="noopener">pointer</a> to b. This is necessary, because Fprintf expects an <a href="https://pkg.go.dev/io#Writer" target="_blank" rel="noopener">io.Writer</a> interface which is satisfied by the <a href="https://pkg.go.dev/strings#Builder.Write" target="_blank" rel="noopener">Builder.Write</a> method which has a <code>*Builder</code> pointer receiver.</p>
+<p>The first argument to fmt.Fprintf is <code>&amp;b</code>, a <a href="https://tour.golang.org/moretypes/1" target="_blank" rel="noopener">pointer</a> to b. This is necessary, because Fprintf expects an <a href="https://pkg.go.dev/io#Writer" target="_blank" rel="noopener">io.Writer</a> interface which is satisfied by the <a href="https://pkg.go.dev/strings#Builder.Write" target="_blank" rel="noopener">Builder.Write</a> method which has a <code>*Builder</code> pointer receiver.</p>
 <p>I was tempted to replace <code>Fprintf(&amp;b, ...)</code> with <code>Fprintf(b, ...)</code>, to make it more consistent with the <code>b.WriteString</code> and <code>b.String</code> Builder method calls further down, but doing this causes the compiler to complain:</p>
 <p><em>cannot use b (type strings.Builder) as type io.Writer in argument to fmt.Fprintf:<br>strings.Builder does not implement io.Writer (Write method has pointer receiver)</em></p>
 <h2 id="value-vs-pointer-function-arguments">Value vs. pointer function arguments</h2>
@@ -119,8 +119,8 @@ func write(b strings.Builder, s string) {
     b.WriteString(s)
 }
 </code></pre>
-<p>Running the code above in the <a href="https://pkg.go.dev/strings#Builder" target="_blank" rel="noopener">example sandbox</a>) outputs just the word <em>ignition</em>. </p>
-<p>This suggests that the 3 calls to <code>write(b)</code> did not actually modify b, which makes sense, because passing a struct type to a function <a href="https://tour.golang.org/methods/4" target="_blank" rel="noopener">copies</a> the struct value instead of passing a reference to it.</p>
+<p>Running the code above in the <a href="https://pkg.go.dev/strings#Builder" target="_blank" rel="noopener">example sandbox</a> outputs just the word <em>ignition</em>.</p>
+<p>This suggests that the 3 calls to <code>write(b)</code> did not actually modify b, which makes sense, because passing a struct to a function <a href="https://tour.golang.org/methods/4" target="_blank" rel="noopener">copies</a> the struct value instead of passing a reference to it.</p>
 <p>To fix this, we have to use a pointer argument, which means that we also have to invoke the function with <code>write(&amp;b, ...)</code>. This works, but doesn&#39;t make the code any more consistent.</p>
 <pre><code class="language-go">func main() {
     var b strings.Builder
@@ -173,6 +173,7 @@ func write(b *strings.Builder, s string) {
 <blockquote>
 <p>There&#39;s no avoiding pointers in Go.<br>Learn the quirks and the gotchas today.<br>✨ Keep learning! ✨</p>
 </blockquote>
+<p><em>To leave a comment<br>please visit <a href="https://dev.to/jldec/getting-started-with-go-part-2-pointers-4a47" target="_blank" rel="noopener">dev.to/jldec</a></em></p>
 </div>
 </div>
 
