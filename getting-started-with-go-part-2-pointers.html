@@ -81,8 +81,9 @@
 <div >
 <div data-render-html="/getting-started-with-go-part-2-pointers"><h2 id="golang">Golang</h2>
 <p>This is part 2 of my experience as a new user of Go, featuring first encounters with pointers. For part 1, see <a href="./getting-started-with-go">Getting started with Go</a>.</p>
+<p>If you&#39;d like to follow along, and try out out the code in this article, all you need is the Go <a href="https://play.golang.org/" target="_blank" rel="noopener">playground</a> to run the examples.</p>
 <h2 id="pointers">Pointers</h2>
-<p>The <a href="https://github.com/jldec/shortscale-go/blob/main/shortscale.go" target="_blank" rel="noopener">shortscale</a> package which I covered last time, uses a string <a href="https://pkg.go.dev/strings#Builder" target="_blank" rel="noopener">Builder</a>. Here is the example from the Builder docs. When you run it, it will output: <em>3...2...1...ignition</em>.</p>
+<p>The <a href="https://github.com/jldec/shortscale-go/blob/main/shortscale.go" target="_blank" rel="noopener">shortscale</a> package which I covered last time, uses a string <a href="https://pkg.go.dev/strings#Builder" target="_blank" rel="noopener">Builder</a>. Here is the example from the Builder docs.</p>
 <pre><code class="language-go">package main
 
 import (
@@ -99,11 +100,14 @@ func main() {
     fmt.Println(b.String())
 }
 </code></pre>
-<p>Notice that <code>var b</code> is an instance of the Builder.</p>
+<p>Notice that <code>var b</code> is an instance of the Builder. When you run the code, it will output: <em>3...2...1...ignition</em>.</p>
 <h2 id="pointer-receiver-methods-and-interfaces">Pointer receiver methods and interfaces</h2>
-<p>The first argument to fmt.Fprintf is <code>&amp;b</code>, a <a href="https://tour.golang.org/moretypes/1" target="_blank" rel="noopener">pointer</a> to b. This is necessary, because Fprintf expects an <a href="https://pkg.go.dev/io#Writer" target="_blank" rel="noopener">io.Writer</a> interface which is satisfied by the <a href="https://pkg.go.dev/strings#Builder.Write" target="_blank" rel="noopener">Builder.Write</a> method which has a <code>*Builder</code> pointer receiver.</p>
-<p>I was tempted to replace <code>Fprintf(&amp;b, ...)</code> with <code>Fprintf(b, ...)</code>, to make it more consistent with the <code>b.WriteString</code> and <code>b.String</code> Builder method calls further down, but doing this causes the compiler to complain:</p>
-<p><em>cannot use b (type strings.Builder) as type io.Writer in argument to fmt.Fprintf:<br>strings.Builder does not implement io.Writer (Write method has pointer receiver)</em></p>
+<p>The first argument to fmt.Fprintf is <code>&amp;b</code>, a <a href="https://tour.golang.org/moretypes/1" target="_blank" rel="noopener">pointer</a> to b. This is necessary, because fmt.Fprintf expects an <a href="https://pkg.go.dev/io#Writer" target="_blank" rel="noopener">io.Writer</a> interface.</p>
+<p>The <a href="https://pkg.go.dev/strings#Builder.Write" target="_blank" rel="noopener">Builder.Write</a> method matches the io.Writer interface. Notice the pointer syntax in the method receiver after the <code>func</code> keyword.</p>
+<pre><code class="language-go">func (b *Builder) Write(p []byte) (int, error)
+</code></pre>
+<p>I was tempted to replace <code>Fprintf(&amp;b, ...)</code> with <code>Fprintf(b, ...)</code>, to make it more consistent with the <code>b.WriteString()</code> and <code>b.String()</code> further down, but doing this causes the compiler to complain:</p>
+<p><em>cannot use b (type strings.Builder) as type io.Writer in argument to fmt.Fprintf:<br>strings.Builder does not implement io.Writer (<strong>Write method has pointer receiver</strong>)</em></p>
 <h2 id="value-vs-pointer-function-arguments">Value vs. pointer function arguments</h2>
 <p>What if, instead of depending on the Writer interface, we called our own <code>write()</code> function?</p>
 <pre><code class="language-go">func main() {
@@ -119,9 +123,10 @@ func write(b strings.Builder, s string) {
     b.WriteString(s)
 }
 </code></pre>
-<p>Running the code above in the <a href="https://pkg.go.dev/strings#Builder" target="_blank" rel="noopener">example sandbox</a> outputs just the word <em>ignition</em>.</p>
-<p>This suggests that the 3 calls to <code>write(b)</code> did not actually modify b, which makes sense, because passing a struct to a function <a href="https://tour.golang.org/methods/4" target="_blank" rel="noopener">copies</a> the struct value instead of passing a reference to it.</p>
-<p>To fix this, we have to use a pointer argument, which means that we also have to invoke the function with <code>write(&amp;b, ...)</code>. This works, but doesn&#39;t make the code any more consistent.</p>
+<p>Running the code above in the <a href="https://pkg.go.dev/strings#Builder" target="_blank" rel="noopener">example sandbox</a> outputs just the word <em>ignition</em>. </p>
+<p>The 3 calls to <code>write(b)</code> do not modify the builder declared at the top.</p>
+<p>This makes sense, because passing a struct to a function <a href="https://tour.golang.org/methods/4" target="_blank" rel="noopener">copies</a> the struct value.</p>
+<p>To fix this, we have to use a pointer argument in order to pass the argument by reference, and we have to invoke the function with <code>write(&amp;b, ...)</code>. This works, but it doesn&#39;t make the code any more consistent.</p>
 <pre><code class="language-go">func main() {
     var b strings.Builder
     for i := 3; i &gt;= 1; i-- {
@@ -155,6 +160,7 @@ func write(b *strings.Builder, s string) {
 <p><em>panic: runtime error: invalid memory address or nil pointer dereference<br>[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x4991c7]</em></p>
 </blockquote>
 <h2 id="create-the-builder-with-new">Create the Builder with new()</h2>
+<p>Here is one way to start with a pointer which is initialized to point to new Builder.</p>
 <pre><code class="language-go">func main() {
     b := new(strings.Builder)
     for i := 3; i &gt;= 1; i-- {
@@ -164,8 +170,8 @@ func write(b *strings.Builder, s string) {
     fmt.Println(b.String())
 }
 </code></pre>
-<p><code>new(strings.Builder)</code> returns a pointer to a freshly allocated Builder, which we can use for both functions and pointer receiver methods. This is pattern I finally opted for in <a href="https://github.com/jldec/shortscale-go/blob/2485be23ef48660d8913b2ac884030220dc82d74/shortscale.go#L17-L24" target="_blank" rel="noopener">shortscale-go</a>.</p>
-<p>NOTE: The more explicit <a href="https://tour.golang.org/moretypes/5" target="_blank" rel="noopener">struct literal</a> syntax is equivalent to new() in this case.</p>
+<p><code>new(strings.Builder)</code> returns a pointer to a freshly allocated Builder, which we can use for both functions and pointer receiver methods. This is the pattern which I now use in <a href="https://github.com/jldec/shortscale-go/blob/2485be23ef48660d8913b2ac884030220dc82d74/shortscale.go#L17-L24" target="_blank" rel="noopener">shortscale-go</a>.</p>
+<p>An alternative, which does the same thing, is the more explicit <a href="https://tour.golang.org/moretypes/5" target="_blank" rel="noopener">struct literal</a> shown below.</p>
 <pre><code class="language-go">func main() {
     b := &amp;strings.Builder{}
     ...
