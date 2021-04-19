@@ -107,7 +107,8 @@ func main() {
 <pre><code class="language-go">func (b *Builder) Write(p []byte) (int, error)
 </code></pre>
 <p>I was tempted to replace <code>Fprintf(&amp;b, ...)</code> with <code>Fprintf(b, ...)</code>, to make it more consistent with the <code>b.WriteString()</code> and <code>b.String()</code> further down, but doing this causes the compiler to complain:</p>
-<p><em>cannot use b (type strings.Builder) as type io.Writer in argument to fmt.Fprintf:<br>strings.Builder does not implement io.Writer (<strong>Write method has pointer receiver</strong>)</em></p>
+<p><em>&quot;cannot use b (type strings.Builder) as type io.Writer in argument to fmt.Fprintf:
+strings.Builder does not implement io.Writer (<strong>Write method has pointer receiver</strong>)&quot;</em></p>
 <h2 id="value-vs-pointer-function-arguments">Value vs. pointer function arguments</h2>
 <p>What if, instead of depending on the Writer interface, we called our own <code>write()</code> function?</p>
 <pre><code class="language-go">func main() {
