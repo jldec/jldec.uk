@@ -127,7 +127,7 @@ func write(b strings.Builder, s string) {
 <p>Running the code above in the <a href="https://pkg.go.dev/strings#Builder" target="_blank" rel="noopener">example sandbox</a> outputs just the word <em>ignition</em>. </p>
 <p>The 3 calls to <code>write(b)</code> do not modify the builder declared at the top.</p>
 <p>This makes sense, because passing a struct to a function <a href="https://tour.golang.org/methods/4" target="_blank" rel="noopener">copies</a> the struct value.</p>
-<p>To fix this, we have to use a pointer, to pass the struct by reference, and we have to invoke the function with <code>write(&amp;b, ...)</code>. This works, but it doesn&#39;t make the code any more consistent.</p>
+<p>To fix this, we have to use a pointer to pass the struct by reference, and we have to invoke the function with <code>write(&amp;b, ...)</code>. This works, but it doesn&#39;t make the code any more consistent.</p>
 <pre><code class="language-go">func main() {
     var b strings.Builder
     for i := 3; i &gt;= 1; i-- {
