@@ -161,7 +161,7 @@ func write(b *strings.Builder, s string) {
 <p><em>panic: runtime error: invalid memory address or nil pointer dereference<br>[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x4991c7]</em></p>
 </blockquote>
 <h2 id="create-the-builder-with-new">Create the Builder with new()</h2>
-<p>Here is one way to start with a pointer which is initialized to point to new Builder.</p>
+<p>Here is one way to initialize a pointer so that it references a new Builder.</p>
 <pre><code class="language-go">func main() {
     b := new(strings.Builder)
     for i := 3; i &gt;= 1; i-- {
