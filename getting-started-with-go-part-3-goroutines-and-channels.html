@@ -208,7 +208,7 @@ blastoff crew-1
 <p>The reason is that <code>count++</code> requires a read followed by write, and these are not automatically synchronized. One goroutine may overwrite the increment of another, resulting in lost writes.</p>
 <p>To fix this, the counter has be protected to make the increment operation atomic.</p>
 <h2 id="counter-go">Counter-go</h2>
-<p><a href="https://github.com/jldec/counter-go" target="_blank" rel="noopener">github.com/jldec/counter-go</a> package demonstrates 3 different implementations of a threadsafe global counter.</p>
+<p><a href="https://github.com/jldec/counter-go" target="_blank" rel="noopener">github.com/jldec/counter-go</a> demonstrates 3 different implementations of a threadsafe global counter.</p>
 <ol>
 <li><strong>CounterAtomic</strong> uses <code>atomic.AddUint64</code> and <code>atomic.LoadUint64</code>.</li>
 <li><strong>CounterMutex</strong> uses <code>sync.RWMutex</code>.</li>
