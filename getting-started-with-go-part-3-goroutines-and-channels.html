@@ -207,7 +207,138 @@ blastoff crew-1
 <p>Given that <a href="https://pkg.go.dev/net/http" target="_blank" rel="noopener">net/http</a> requests are handled by goroutines, can we explain why there is a data race when the function which handles a request increments a shared counter?</p>
 <p>The reason is that <code>count++</code> requires a read followed by write, and these are not automatically synchronized. One goroutine may overwrite the increment of another, resulting in lost writes.</p>
 <p>To fix this, the counter has be protected to make the increment operation atomic.</p>
-<p>How to do this will be the topic of my next blog post, but for the impatient, I have already published <a href="https://github.com/jldec/counter-go" target="_blank" rel="noopener">https://github.com/jldec/counter-go</a>.</p>
+<h2 id="counter-go">Counter-go</h2>
+<p><a href="https://github.com/jldec/counter-go" target="_blank" rel="noopener">github.com/jldec/counter-go</a> package demonstrates 3 different implementations of a threadsafe global counter.</p>
+<ol>
+<li><strong>CounterAtomic</strong> uses <code>atomic.AddUint64</code> and <code>atomic.LoadUint64</code>.</li>
+<li><strong>CounterMutex</strong> uses <code>sync.RWMutex</code>.</li>
+<li><strong>CounterChannel</strong> serializes all reads and writes inside 1 goroutine with 2 channels.</li>
+</ol>
+<p>All 3 types implement a Counter interface:</p>
+<pre><code class="language-go">type Counter interface {
+    Get() uint32 // get current counter value
+    Inc()        // increment by 1
+}
+</code></pre>
+<p>The <a href="https://github.com/jldec/racey-go/blob/fix-with-counter-go/main.go" target="_blank" rel="noopener">modified server</a> will work with any of the 3 implementations, and no data race should be detected.</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;net/http&quot;
+
+    counter &quot;github.com/jldec/counter-go&quot;
+)
+
+func main() {
+    count := new(counter.CounterAtomic)
+    // count := new(counter.CounterMutex)
+    // count := counter.NewCounterChannel()
+
+    http.HandleFunc(&quot;/&quot;, func(w http.ResponseWriter, r *http.Request) {
+        count.Inc()
+        fmt.Fprintln(w, count.Get())
+    })
+
+    fmt.Println(&quot;Go listening on port 3000&quot;)
+    http.ListenAndServe(&quot;:3000&quot;, nil)
+}
+</code></pre>
+<h3 id="coordination-with-channels">Coordination with channels</h3>
+<p>Of the 3 implementations, <a href="https://github.com/jldec/counter-go/blob/main/counter_channel.go" target="_blank" rel="noopener">CounterChannel</a> is the most interesting. All access to the counter goes through 1 goroutine which uses a <a href="https://tour.golang.org/concurrency/5" target="_blank" rel="noopener">select</a> to wait for either a read or a write on one of two channels.</p>
+<p>Can you tell why neither <code>Inc()</code> nor <code>Get()</code> should block?</p>
+<pre><code class="language-go">
+package counter
+
+// Thread-safe counter
+// Uses 2 Channels to coordinate reads and writes.
+// Must be initialized with NewCounterChannel().
+type CounterChannel struct {
+    readCh  chan uint64
+    writeCh chan int
+}
+
+// NewCounterChannel() is required to initialize a Counter.
+func NewCounterChannel() *CounterChannel {
+    c := &amp;CounterChannel{
+        readCh:  make(chan uint64),
+        writeCh: make(chan int),
+    }
+
+    // The actual counter value lives inside this goroutine.
+    // It can only be accessed for R/W via one of the channels.
+    go func() {
+        var count uint64 = 0
+        for {
+            select {
+            // Reading from readCh is equivalent to reading count.
+            case c.readCh &lt;- count:
+            // Writing to the writeCh increments count.
+            case &lt;-c.writeCh:
+                count++
+            }
+        }
+    }()
+
+    return c
+}
+
+// Increment counter by pushing an arbitrary int to the write channel.
+func (c *CounterChannel) Inc() {
+    c.check()
+    c.writeCh &lt;- 1
+}
+
+// Get current counter value from the read channel.
+func (c *CounterChannel) Get() uint64 {
+    c.check()
+    return &lt;-c.readCh
+}
+
+func (c *CounterChannel) check() {
+    if c.readCh == nil {
+        panic(&quot;Uninitialized Counter, requires NewCounterChannel()&quot;)
+    }
+}
+</code></pre>
+<h3 id="benchmarks">Benchmarks</h3>
+<p>All 3 <a href="https://github.com/jldec/counter-go" target="_blank" rel="noopener">implementations</a> are fast. Serializing everything through a goroutine with channels, costs only a few hundred ns for a single read or write. When constrained to a single OS thread, the cost of goroutines is even lower.</p>
+<pre><code class="language-sh">$ go test -bench .
+goos: darwin
+goarch: amd64
+pkg: github.com/jldec/counter-go
+cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
+</code></pre>
+<h4 id="simple-1-op--1-inc-in-same-thread">Simple: 1 op = 1 Inc() in same thread</h4>
+<pre><code class="language-sh">BenchmarkCounter_1/Atomic-12                 195965660          6 ns/op
+BenchmarkCounter_1/Mutex-12                   54177086         22 ns/op
+BenchmarkCounter_1/Channel-12                  4499144        286 ns/op
+</code></pre>
+<h4 id="concurrent-1-op--1-inc-across-each-of-10-goroutines">Concurrent: 1 op = 1 Inc() across each of 10 goroutines</h4>
+<pre><code class="language-sh">BenchmarkCounter_2/Atomic_no_reads-12          7298484        191 ns/op
+BenchmarkCounter_2/Mutex_no_reads-12           1966656        621 ns/op
+BenchmarkCounter_2/Channel_no_reads-12          256842       4771 ns/op
+</code></pre>
+<h4 id="concurrent-1-op---1-inc--10-get--across-each-of-10-goroutines">Concurrent: 1 op = [ 1 Inc() + 10 Get() ] across each of 10 goroutines</h4>
+<pre><code class="language-sh">BenchmarkCounter_2/Atomic_10_reads-12          3922029        286 ns/op
+BenchmarkCounter_2/Mutex_10_reads-12            416354       2844 ns/op
+BenchmarkCounter_2/Channel_10_reads-12           21506      55733 ns/op
+</code></pre>
+<h4 id="constrained-to-single-thread">Constrained to single thread</h4>
+<pre><code class="language-sh">$ GOMAXPROCS=1 go test -bench .
+
+BenchmarkCounter_1/Atomic                    197135869          6 ns/op
+BenchmarkCounter_1/Mutex                      55698454         22 ns/op
+BenchmarkCounter_1/Channel                     5689788        214 ns/op
+
+BenchmarkCounter_2/Atomic_no_reads            19519166         60 ns/op
+BenchmarkCounter_2/Mutex_no_reads              4702759        254 ns/op
+BenchmarkCounter_2/Channel_no_reads             530554       2197 ns/op
+
+BenchmarkCounter_2/Atomic_10_reads             6269979        189 ns/op
+BenchmarkCounter_2/Mutex_10_reads               927439       1354 ns/op
+BenchmarkCounter_2/Channel_10_reads              47889      25054 ns/op
+</code></pre>
 <blockquote>
 <p>🚀 - code safe - 🚀</p>
 </blockquote>
