@@ -113,7 +113,7 @@ $ curl localhost:3000
 <p>Let&#39;s try sending multiple requests at the same time. This command invokes curl with urls from a file using xargs to spawn 4 processes at once.</p>
 <pre><code class="language-sh">$ cat urls.txt | xargs -P 4 -n 1 curl
 </code></pre>
-<p>The file contains 100 lines, but instead of ending on a nice round number, on systems with more than 1 core you may see  something like this (e.g. after 3 runs)</p>
+<p>The <a href="https://github.com/jldec/racey-go/blob/main/urls.txt" target="_blank" rel="noopener">file</a> contains 100 lines, but instead of ending on a nice round number, on systems with more than 1 core you may see  something like this (e.g. after 3 runs)</p>
 <pre><code>289
 292
 291
