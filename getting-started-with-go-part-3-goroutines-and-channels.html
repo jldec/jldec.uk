@@ -160,7 +160,8 @@ Previous write at 0x00c000138280 by goroutine 9:
 </blockquote>
 <h2 id="goroutines">Goroutines</h2>
 <p>Goroutines provide low-overhead threading. They are easy to create and scale well on multi-core processors.</p>
-<p>Let&#39;s start with an example.</p>
+<p>The Go runtime can schedule many concurrent goroutines across a small number of OS threads. Under the covers, this is how the <a href="https://golang.org/src/net/http/server.go#L3013" target="_blank" rel="noopener">http</a> library handles concurrent web requests.</p>
+<p>Let&#39;s start with an example. You can run it in the <a href="https://play.golang.org/p/HdH4UQEEXuU" target="_blank" rel="noopener">Go Playground</a>.</p>
 <pre><code class="language-go">package main
 
 import (
@@ -198,7 +199,6 @@ crew-2 1
 blastoff crew-2
 blastoff crew-1
 </code></pre>
-<p>The Go runtime can schedule many concurrent goroutines across a small number of OS threads. Under the covers, this is how the <a href="https://golang.org/src/net/http/server.go#L3013" target="_blank" rel="noopener">http</a> library handles concurrent web requests.</p>
 <h2 id="channels">Channels</h2>
 <p><a href="https://tour.golang.org/concurrency/2" target="_blank" rel="noopener">Channels</a> allow goroutines to communicate and coordinate.</p>
 <p>In the example above, <code>&lt;-ch</code> (receive) will block until another goroutine uses <code>ch &lt;-</code> to send a string to the channel. This happens at the end of each countdown.</p>
