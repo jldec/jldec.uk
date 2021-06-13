@@ -94,13 +94,14 @@
 <p><img src="./images/github-actions-concurrency-announcement.png" alt="Screenshot of GitHub Blog from April 19, 2021 announcing the new concurrency key in GitHub Actions"></p>
 <p>In the case of using actions to generate a GitHub Pages website, <a href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#concurrency" target="_blank" rel="noopener">the feature works</a> exactly as required.</p>
 <ul>
-<li>The first workflow will run to completion</li>
-<li>Subsequent workflows will either be delayed or cancelled.</li>
+<li>The first workflow will run to completion.</li>
+<li>Subsequent concurrent workflows will either be delayed or cancelled.</li>
 <li>In the end only the first and last of the overlapping workflows will be run.</li>
 </ul>
 <p>And all you need is <a href="https://github.com/jldec/cloudflare-pages-test/blob/main/.github/workflows/generate.yaml#L5-L6" target="_blank" rel="noopener">2 lines of yaml</a>.
 This is from the workflow which generates <a href="https://jldec.me/first-steps-using-cloudflare-pages#github-pages" target="_blank" rel="noopener">jldec.uk</a>.</p>
 <p><a href="https://github.com/jldec/cloudflare-pages-test/blob/main/.github/workflows/generate.yaml#L5-L6" target="_blank" rel="noopener"><img src="./images/github-actions-concurrency-yaml.png" alt="Screenshot of yaml for GitHub Action with concurrency group"></a></p>
+<p>The value of the <code>group</code> can be any string - workflows in the same group are effectively serialized.</p>
 <blockquote>
 <p>Thank you GitHub!</p>
 </blockquote>
