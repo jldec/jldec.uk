@@ -96,7 +96,8 @@
 </code></pre>
 <p>This creates a directory called <code>wasm-worker</code> populated with files from <a href="https://github.com/cloudflare/rustwasm-worker-template/tree/72d390bf22983d43a1da3681faa093874fa32837" target="_blank" rel="noopener">github.com/cloudflare/rustwasm-worker-template</a>.</p>
 <h2 id="wrangler-dev">wrangler dev</h2>
-<p>If you set your &#39;account_id&#39; in wrangler.toml, you can call <code>wrangler dev</code> to build and run the worker. (<em>There is no need to install or run &#39;wasm-pack&#39; as suggested by the project README.</em>)</p>
+<p>You can now call <code>wrangler dev</code> to build and run the worker.</p>
+<p><em>Note</em>: There is no need to run &#39;wasm-pack&#39; as suggested by the project README, and as of wrangler <a href="https://github.com/cloudflare/wrangler/releases/tag/v1.18.0" target="_blank" rel="noopener">v1.18.0</a>, your &#39;account _id&#39; will be auto-inferred by wrangler, if omitted from wrangler.toml.</p>
 <pre><code>$ wrangler dev
 🌀  Compiling your project to WebAssembly...
 [INFO]: 🎯  Checking for the Wasm target...
