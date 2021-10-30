@@ -106,6 +106,10 @@ func main() {
 <p>Notice that <code>var b</code> is an instance of the Builder. When you run the code, it will output: <em>3...2...1...ignition</em>.</p>
 <h2 id="pointer-receiver-methods-and-interfaces">Pointer receiver methods and interfaces</h2>
 <p>The first argument to fmt.Fprintf is <code>&amp;b</code>, a <a href="https://tour.golang.org/moretypes/1" target="_blank" rel="noopener">pointer</a> to b. This is necessary, because <a href="https://pkg.go.dev/fmt#Fprintf" target="_blank" rel="noopener">fmt.Fprintf</a> expects an <a href="https://pkg.go.dev/io#Writer" target="_blank" rel="noopener">io.Writer</a> interface.</p>
+<pre><code class="language-go">type Writer interface {
+    Write(p []byte) (n int, err error)
+}
+</code></pre>
 <p>The <a href="https://pkg.go.dev/strings#Builder.Write" target="_blank" rel="noopener">Builder.Write</a> method matches the io.Writer interface. Notice the pointer syntax in the method receiver after the <code>func</code> keyword.</p>
 <pre><code class="language-go">func (b *Builder) Write(p []byte) (int, error)
 </code></pre>
