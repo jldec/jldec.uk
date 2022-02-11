@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="./css/pubblog.css">
 <link rel="stylesheet" href="./css/open-sans.css">
 <link rel="stylesheet" href="./css/font-awesome.css">
-<link rel="stylesheet" href="./css/highlight-11.4.0-github.css">
+<link rel="stylesheet" href="./css/prism.css">
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -47,6 +47,7 @@
 <nav id="toc">
 <ul>
 <li><strong><a href="./">Home</a></strong></li>
+<li><a href="./what-is-git-lfs">What is git LFS?</a></li>
 <li><a href="./first-impressions-of-the-new-github-projects-beta">First impressions of the new GitHub Projects Beta</a></li>
 <li><a href="./using-gitpod-to-create-a-pr">Using Gitpod to create a PR</a></li>
 <li><a href="./preventing-concurrent-github-actions">Preventing concurrent GitHub Actions</a></li>
@@ -86,26 +87,26 @@
 <div data-render-html="/extracting-an-esm-module-from-a-deno-script"><p>This is another followup to my recent post about <a href="./getting-started-with-deno">Getting Started with Deno</a>.</p>
 <p>I thought it would make sense to extract the crawler code into its own <a href="./migrating-from-cjs-to-esm">ESM module</a> so that it can also be used with Node.js or in the browser.</p>
 <p>The resulting <a href="https://github.com/jldec/deno-hello/blob/main/scanurl.mjs#L18" target="_blank" rel="noopener">API</a> is a bit ugly because it expects parse5 and fetch as parameters, but it works  .</p>
-<pre><code class="language-js">/**
+<pre><code class="language-js"><span class="token comment">/**
  * @param {URL} rootURL
  * @param {boolean} noRecurse
  * @param {boolean} quiet
  * @param {function} parse5 - transitive dependency
  * @param {function} fetch - native or npm package
  * @param {Object} fetchOpts options passed to fetch - optional
- * @returns {Object} map of url -&gt; { url, status, in, [error] }
- */
-export default async function scanurl(rootURL, noRecurse, quiet, parse5, fetch, fetchOpts) {
+ * @returns {Object} map of url -> { url, status, in, [error] }
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">scanurl</span><span class="token punctuation">(</span><span class="token parameter">rootURL<span class="token punctuation">,</span> noRecurse<span class="token punctuation">,</span> quiet<span class="token punctuation">,</span> parse5<span class="token punctuation">,</span> fetch<span class="token punctuation">,</span> fetchOpts</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 </code></pre>
 <h2 id="calling-the-esm-module-from-the-browser">Calling the ESM module from the browser</h2>
 <p>You can try running the module from inside your own browser at <a href="https://deno-hello.jldec.me/" target="_blank" rel="noopener">https://deno-hello.jldec.me/</a>.</p>
 <p><a href="https://deno-hello.jldec.me/" target="_blank" rel="noopener"><img src="./images/deno-hello.jldec.me.png" alt="Screenshot of https://deno-hello.jldec.me"></a></p>
 <p>The page shows how to import the module from an inline <code>&lt;script type=&quot;module&quot;&gt;</code>.</p>
-<pre><code class="language-html">&lt;script type=&quot;module&quot; id=&quot;code&quot;&gt;
-import scanurl from &#39;./scanurl.mjs&#39;;
-import parse5 from &#39;https://cdn.skypack.dev/parse5&#39;;
-...
-&lt;/script&gt;
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>code<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"><span class="token language-javascript">
+<span class="token keyword">import</span> scanurl <span class="token keyword">from</span> <span class="token string">'./scanurl.mjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> parse5 <span class="token keyword">from</span> <span class="token string">'https://cdn.skypack.dev/parse5'</span><span class="token punctuation">;</span>
+<span class="token operator">...</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
 </code></pre>
 <p>Note that the usual browser CORS restrictions also apply to ESM modules, and to fetch() calls. In this case &#39;scanurl&#39; is imported using a relative path on the same origin, and &#39;parse5&#39; is imported using <a href="https://www.skypack.dev/" target="_blank" rel="noopener">https://www.skypack.dev/</a>.</p>
 <h2 id="using-the-scanode-esm-module-with-node">Using the scanode ESM module with Node</h2>
@@ -118,17 +119,17 @@ parsing /
 🎉 no broken links found.
 </code></pre>
 <p>You can also call the module API from your own code as in <a href="https://github.com/jldec/deno-hello/blob/main/node_example/test-scan.js" target="_blank" rel="noopener">node_example/test-scan.js</a>.</p>
-<pre><code class="language-js">import fetch from &#39;node-fetch&#39;;
-import parse5 from &#39;parse5&#39;;
-import scanode from &#39;scanode&#39;;
+<pre><code class="language-js"><span class="token keyword">import</span> fetch <span class="token keyword">from</span> <span class="token string">'node-fetch'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> parse5 <span class="token keyword">from</span> <span class="token string">'parse5'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> scanode <span class="token keyword">from</span> <span class="token string">'scanode'</span><span class="token punctuation">;</span>
 
-const result = await scanode(
-  new URL(&#39;https://jldec.me&#39;),
-  false, // noRecurse
-  false, // quiet
-  parse5,
+<span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">scanode</span><span class="token punctuation">(</span>
+  <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span><span class="token string">'https://jldec.me'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token comment">// noRecurse</span>
+  <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token comment">// quiet</span>
+  parse5<span class="token punctuation">,</span>
   fetch
-);
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p>Notice the imports for &#39;parse5&#39; and &#39;node-fetch&#39;. These are included as dependencies in the <a href="https://github.com/jldec/deno-hello/blob/main/package.json#L9" target="_blank" rel="noopener">package.json</a> for scanode.</p>
 <pre><code class="language-json">{
@@ -172,8 +173,6 @@ const result = await scanode(
 
 <script>window.pubRef = {"href":"/extracting-an-esm-module-from-a-deno-script","relPath":"."};</script>
 <script src="./js/jquery-1.12.4.min.js" ></script>
-<script src="./js/highlight-11.4.0.min.js" ></script>
-<script src="./js/pub-pkg-highlight.js" ></script>
 <script src="./pub/pub-ux.js" ></script>
 <!-- copyright -->
 </body>

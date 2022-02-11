@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="./css/pubblog.css">
 <link rel="stylesheet" href="./css/open-sans.css">
 <link rel="stylesheet" href="./css/font-awesome.css">
-<link rel="stylesheet" href="./css/highlight-11.4.0-github.css">
+<link rel="stylesheet" href="./css/prism.css">
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -34,6 +34,7 @@
 <nav id="toc">
 <ul>
 <li><strong><a href="./">Home</a></strong></li>
+<li><a href="./what-is-git-lfs">What is git LFS?</a></li>
 <li><a href="./first-impressions-of-the-new-github-projects-beta">First impressions of the new GitHub Projects Beta</a></li>
 <li><a href="./using-gitpod-to-create-a-pr">Using Gitpod to create a PR</a></li>
 <li><a href="./preventing-concurrent-github-actions">Preventing concurrent GitHub Actions</a></li>
@@ -85,12 +86,12 @@ export PATH=${PATH}:${DENO_DIR}/bin
 <p><img src="./images/deno-debug-dark.png" alt="VS Code Deno extension Debug"></p>
 <h2 id="hellojs">hello.js</h2>
 <p>Here is <a href="https://github.com/jldec/deno-hello/tree/main/hello.js" target="_blank" rel="noopener">hello.js</a>, my first Deno program. You can run it with <code>deno run hello.js args...</code></p>
-<pre><code class="language-js">const hello = &quot;Hello Deno&quot;;
-console.log(`${hello} %s hello %o`, new Date(), Deno.args);
+<pre><code class="language-js"><span class="token keyword">const</span> hello <span class="token operator">=</span> <span class="token string">"Hello Deno"</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>hello<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> %s hello %o</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> Deno<span class="token punctuation">.</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-const buf = new TextEncoder().encode(&quot;-🦀-\n&quot;);
-await Deno.stdout.write(buf);
-console.table(buf);
+<span class="token keyword">const</span> buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TextEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span><span class="token string">"-🦀-\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">await</span> Deno<span class="token punctuation">.</span>stdout<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p>The easiest way to write to stdout is by using the built-in console.log().</p>
 <p>For those curious about Deno internals:</p>
@@ -110,90 +111,90 @@ console.table(buf);
 <p>After some googling, I landed on <a href="https://github.com/inikulin/parse5" target="_blank" rel="noopener">parse5</a> which enjoys wide usage and offers a simple, low-level tree API at its core.</p>
 <p>I had also heard about <a href="https://docs.skypack.dev/skypack-cdn/code/deno" target="_blank" rel="noopener">Skypack</a>, a CDN, specifically designed to serve npm packages as ESM modules. A quick search on <a href="https://www.skypack.dev/" target="_blank" rel="noopener">skypack.dev</a> and I had a URL for the parse5 module which works in Deno.</p>
 <p>The code in <a href="https://github.com/jldec/deno-hello/blob/main/scan.js" target="_blank" rel="noopener">scan.js</a> crawls a website, validating that all the links on the site which point to the same origin can be fetched.</p>
-<pre><code class="language-js">import parse5 from &quot;https://cdn.skypack.dev/parse5?dts&quot;;
+<pre><code class="language-js"><span class="token keyword">import</span> parse5 <span class="token keyword">from</span> <span class="token string">"https://cdn.skypack.dev/parse5?dts"</span><span class="token punctuation">;</span>
 
-const rootUrl = Deno.args[0];
-if (!rootUrl) exit(1, &quot;Please provide a URL&quot;);
+<span class="token keyword">const</span> rootUrl <span class="token operator">=</span> Deno<span class="token punctuation">.</span>args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>rootUrl<span class="token punctuation">)</span> <span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"Please provide a URL"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-const rootOrigin = new URL(rootUrl).origin;
+<span class="token keyword">const</span> rootOrigin <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span>rootUrl<span class="token punctuation">)</span><span class="token punctuation">.</span>origin<span class="token punctuation">;</span>
 
-const urlMap = {}; // tracks visited urls
+<span class="token keyword">const</span> urlMap <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment">// tracks visited urls</span>
 
-await checkUrl(rootUrl);
-const result = Object.entries(urlMap).filter((kv) =&gt; kv[1] !== &quot;OK&quot;);
+<span class="token keyword">await</span> <span class="token function">checkUrl</span><span class="token punctuation">(</span>rootUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> result <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">entries</span><span class="token punctuation">(</span>urlMap<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">kv</span><span class="token punctuation">)</span> <span class="token operator">=></span> kv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">!==</span> <span class="token string">"OK"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-if (result.length) {
-  exit(1, result);
-} else {
-  exit(0, &quot;🎉 no broken links found.&quot;);
-}
+<span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+  <span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">"🎉 no broken links found."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-// recursively checks url and same-origin urls inside
-// resolves when done
-async function checkUrl(url, base) {
-  base = base || url;
-  try {
-    // parse the url relative to base
-    const urlObj = new URL(url, base);
+<span class="token comment">// recursively checks url and same-origin urls inside</span>
+<span class="token comment">// resolves when done</span>
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">checkUrl</span><span class="token punctuation">(</span><span class="token parameter">url<span class="token punctuation">,</span> base</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  base <span class="token operator">=</span> base <span class="token operator">||</span> url<span class="token punctuation">;</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token comment">// parse the url relative to base</span>
+    <span class="token keyword">const</span> urlObj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> base<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    // ignore query params and hash
-    const href = urlObj.origin + urlObj.pathname;
+    <span class="token comment">// ignore query params and hash</span>
+    <span class="token keyword">const</span> href <span class="token operator">=</span> urlObj<span class="token punctuation">.</span>origin <span class="token operator">+</span> urlObj<span class="token punctuation">.</span>pathname<span class="token punctuation">;</span>
 
-    // only process same-origin urls
-    if (!urlMap[href] &amp;&amp; urlObj.origin === rootOrigin) {
-      // fetch from href
-      urlMap[href] = &quot;pending&quot;;
-      const res = await fetch(href);
+    <span class="token comment">// only process same-origin urls</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>urlMap<span class="token punctuation">[</span>href<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> urlObj<span class="token punctuation">.</span>origin <span class="token operator">===</span> rootOrigin<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">// fetch from href</span>
+      urlMap<span class="token punctuation">[</span>href<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"pending"</span><span class="token punctuation">;</span>
+      <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">fetch</span><span class="token punctuation">(</span>href<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-      // bail out if fetch was not ok
-      if (!res.ok) {
-        urlMap[href] = { status: res.status, in: base };
-        return;
-      }
+      <span class="token comment">// bail out if fetch was not ok</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>res<span class="token punctuation">.</span>ok<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        urlMap<span class="token punctuation">[</span>href<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token literal-property property">status</span><span class="token operator">:</span> res<span class="token punctuation">.</span>status<span class="token punctuation">,</span> <span class="token keyword">in</span><span class="token operator">:</span> base <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
 
-      urlMap[href] = &quot;OK&quot;;
+      urlMap<span class="token punctuation">[</span>href<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"OK"</span><span class="token punctuation">;</span>
 
-      // check content type
-      if (!res.headers.get(&quot;content-type&quot;).match(/text\/html/i)) return;
+      <span class="token comment">// check content type</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>res<span class="token punctuation">.</span>headers<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"content-type"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">text\/html</span><span class="token regex-delimiter">/</span><span class="token regex-flags">i</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
 
-      // parse response
-      console.log(&quot;parsing&quot;, urlObj.pathname);
-      const html = await res.text();
-      const document = parse5.parse(html);
+      <span class="token comment">// parse response</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"parsing"</span><span class="token punctuation">,</span> urlObj<span class="token punctuation">.</span>pathname<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">const</span> html <span class="token operator">=</span> <span class="token keyword">await</span> res<span class="token punctuation">.</span><span class="token function">text</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">const</span> document <span class="token operator">=</span> parse5<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>html<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-      // scan for &lt;a&gt; tags and call checkURL for each, with base = href
-      const promises = [];
-      scan(document, &quot;a&quot;, (node) =&gt; {
-        promises.push(checkUrl(attr(node, &quot;href&quot;), href));
-      });
-      await Promise.all(promises);
-    }
-  } catch (err) {
-    urlMap[url] = { error: err.message, in: base };
-  }
-}
+      <span class="token comment">// scan for &lt;a> tags and call checkURL for each, with base = href</span>
+      <span class="token keyword">const</span> promises <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+      <span class="token function">scan</span><span class="token punctuation">(</span>document<span class="token punctuation">,</span> <span class="token string">"a"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">node</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        promises<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">checkUrl</span><span class="token punctuation">(</span><span class="token function">attr</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> <span class="token string">"href"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> href<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">await</span> Promise<span class="token punctuation">.</span><span class="token function">all</span><span class="token punctuation">(</span>promises<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    urlMap<span class="token punctuation">[</span>url<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token literal-property property">error</span><span class="token operator">:</span> err<span class="token punctuation">.</span>message<span class="token punctuation">,</span> <span class="token keyword">in</span><span class="token operator">:</span> base <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-// return value of attr with name for a node
-function attr(node, name) {
-  return node.attrs.find((attr) =&gt; attr.name === name)?.value;
-}
+<span class="token comment">// return value of attr with name for a node</span>
+<span class="token keyword">function</span> <span class="token function">attr</span><span class="token punctuation">(</span><span class="token parameter">node<span class="token punctuation">,</span> name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> node<span class="token punctuation">.</span>attrs<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">attr</span><span class="token punctuation">)</span> <span class="token operator">=></span> attr<span class="token punctuation">.</span>name <span class="token operator">===</span> name<span class="token punctuation">)</span><span class="token operator">?.</span>value<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-// recursive DOM scan
-// calls fn(node) on nodes matching tagName
-function scan(node, tagName, fn) {
-  if (node?.tagName === tagName) {
-    fn(node);
-  }
-  if (!node.childNodes) return;
-  for (const childNode of node.childNodes) {
-    scan(childNode, tagName, fn);
-  }
-}
+<span class="token comment">// recursive DOM scan</span>
+<span class="token comment">// calls fn(node) on nodes matching tagName</span>
+<span class="token keyword">function</span> <span class="token function">scan</span><span class="token punctuation">(</span><span class="token parameter">node<span class="token punctuation">,</span> tagName<span class="token punctuation">,</span> fn</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>node<span class="token operator">?.</span>tagName <span class="token operator">===</span> tagName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">fn</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>node<span class="token punctuation">.</span>childNodes<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> childNode <span class="token keyword">of</span> node<span class="token punctuation">.</span>childNodes<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">scan</span><span class="token punctuation">(</span>childNode<span class="token punctuation">,</span> tagName<span class="token punctuation">,</span> fn<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-function exit(code, msg) {
-  console.log(msg);
-  Deno.exit(code);
-}
+<span class="token keyword">function</span> <span class="token function">exit</span><span class="token punctuation">(</span><span class="token parameter">code<span class="token punctuation">,</span> msg</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  Deno<span class="token punctuation">.</span><span class="token function">exit</span><span class="token punctuation">(</span>code<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p>This script is hosted at <a href="https://deno-hello.jldec.me/" target="_blank" rel="noopener">https://deno-hello.jldec.me/</a> using <a href="https://jldec.me/first-steps-using-cloudflare-pages" target="_blank" rel="noopener">Cloudflare Pages</a>.</p>
 <p>To run it, call <code>deno run --allow-net SCRIPT URL</code>. E.g.</p>
@@ -249,8 +250,6 @@ $ ./scan https://jldec.fun
 
 <script>window.pubRef = {"href":"/getting-started-with-deno","relPath":"."};</script>
 <script src="./js/jquery-1.12.4.min.js" ></script>
-<script src="./js/highlight-11.4.0.min.js" ></script>
-<script src="./js/pub-pkg-highlight.js" ></script>
 <script src="./pub/pub-ux.js" ></script>
 <!-- copyright -->
 </body>

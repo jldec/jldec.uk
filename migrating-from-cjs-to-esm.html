@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="./css/pubblog.css">
 <link rel="stylesheet" href="./css/open-sans.css">
 <link rel="stylesheet" href="./css/font-awesome.css">
-<link rel="stylesheet" href="./css/highlight-11.4.0-github.css">
+<link rel="stylesheet" href="./css/prism.css">
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -34,6 +34,7 @@
 <nav id="toc">
 <ul>
 <li><strong><a href="./">Home</a></strong></li>
+<li><a href="./what-is-git-lfs">What is git LFS?</a></li>
 <li><a href="./first-impressions-of-the-new-github-projects-beta">First impressions of the new GitHub Projects Beta</a></li>
 <li><a href="./using-gitpod-to-create-a-pr">Using Gitpod to create a PR</a></li>
 <li><a href="./preventing-concurrent-github-actions">Preventing concurrent GitHub Actions</a></li>
@@ -111,38 +112,38 @@
 <p>Here is an example showing require() and import() together.</p>
 <p>I published <a href="https://github.com/jldec/shortscale" target="_blank" rel="noopener">shortscale</a> v1 as CommonJS. For <a href="https://github.com/jldec/shortscale/pull/2" target="_blank" rel="noopener">v2 and later</a> the module is only available as ESM. This means that later releases can no longer be loaded using Node.js require().</p>
 <p>This <a href="https://github.com/jldec/demo-fastify-esm" target="_blank" rel="noopener">fastify server</a> loads both module versions from a CJS context.</p>
-<pre><code class="language-js">// minimal fastify server based on:
-// https://www.fastify.io/docs/latest/Getting-Started/#your-first-server
+<pre><code class="language-js"><span class="token comment">// minimal fastify server based on:</span>
+<span class="token comment">// https://www.fastify.io/docs/latest/Getting-Started/#your-first-server</span>
 
-const fastify = require(&#39;fastify&#39;)({ logger: true });
+<span class="token keyword">const</span> fastify <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'fastify'</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">logger</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-fastify.register(async (fastify) =&gt; {
-  let shortscale_v1 = require(&#39;shortscale-v1&#39;);
-  let shortscale_v4 = (await import(&#39;shortscale-v4&#39;)).default;
+fastify<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token parameter">fastify</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> shortscale_v1 <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'shortscale-v1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">let</span> shortscale_v4 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'shortscale-v4'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>default<span class="token punctuation">;</span>
 
-  // e.g. http://localhost:3000/shortscale-v1?n=47
-  fastify.get(&#39;/shortscale-v1&#39;, function (req, res) {
-    let num = Number(req.query.n);
-    let str = &#39;&#39; + shortscale_v1(num);
-    res.send({num, str});
-  });
+  <span class="token comment">// e.g. http://localhost:3000/shortscale-v1?n=47</span>
+  fastify<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/shortscale-v1'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">let</span> num <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span>query<span class="token punctuation">.</span>n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> str <span class="token operator">=</span> <span class="token string">''</span> <span class="token operator">+</span> <span class="token function">shortscale_v1</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">{</span>num<span class="token punctuation">,</span> str<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-  // e.g. http://localhost:3000/shortscale-v4?n=47
-  fastify.get(&#39;/shortscale-v4&#39;, function (req, res) {
-    let num = Number(req.query.n);
-    let str = &#39;&#39; + shortscale_v4(num);
-    res.send({num, str});
-  });
-});
+  <span class="token comment">// e.g. http://localhost:3000/shortscale-v4?n=47</span>
+  fastify<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/shortscale-v4'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">let</span> num <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span>query<span class="token punctuation">.</span>n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> str <span class="token operator">=</span> <span class="token string">''</span> <span class="token operator">+</span> <span class="token function">shortscale_v4</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">{</span>num<span class="token punctuation">,</span> str<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-// Run the server!
-fastify.listen(3000, function (err, address) {
-  if (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-  fastify.log.info(`server listening on ${address}`);
-});
+<span class="token comment">// Run the server!</span>
+fastify<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token number">3000</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">err<span class="token punctuation">,</span> address</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    fastify<span class="token punctuation">.</span>log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    process<span class="token punctuation">.</span><span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  fastify<span class="token punctuation">.</span>log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">server listening on </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>address<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p>For this demo, <code>package.json</code> installs both versions of shortscale.</p>
 <pre><code class="language-json">{
@@ -189,8 +190,6 @@ fastify.listen(3000, function (err, address) {
 
 <script>window.pubRef = {"href":"/migrating-from-cjs-to-esm","relPath":"."};</script>
 <script src="./js/jquery-1.12.4.min.js" ></script>
-<script src="./js/highlight-11.4.0.min.js" ></script>
-<script src="./js/pub-pkg-highlight.js" ></script>
 <script src="./pub/pub-ux.js" ></script>
 <!-- copyright -->
 </body>

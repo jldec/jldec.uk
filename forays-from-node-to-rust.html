@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="./css/pubblog.css">
 <link rel="stylesheet" href="./css/open-sans.css">
 <link rel="stylesheet" href="./css/font-awesome.css">
-<link rel="stylesheet" href="./css/highlight-11.4.0-github.css">
+<link rel="stylesheet" href="./css/prism.css">
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -34,6 +34,7 @@
 <nav id="toc">
 <ul>
 <li><strong><a href="./">Home</a></strong></li>
+<li><a href="./what-is-git-lfs">What is git LFS?</a></li>
 <li><a href="./first-impressions-of-the-new-github-projects-beta">First impressions of the new GitHub Projects Beta</a></li>
 <li><a href="./using-gitpod-to-create-a-pr">Using Gitpod to create a PR</a></li>
 <li><a href="./preventing-concurrent-github-actions">Preventing concurrent GitHub Actions</a></li>
@@ -91,22 +92,22 @@
 <h2 id="rust-string-and-str">Rust String and str</h2>
 <p>In <strong>JavaScript</strong> building strings is straightforward. Simply use <code>+</code> to concatenate any string to any other string. Empty strings being <a href="https://developer.mozilla.org/en-US/docs/Glossary/Falsy" target="_blank" rel="noopener">falsy</a> helps to write very compact logic.</p>
 <p>The example below from <a href="https://github.com/jldec/shortscale/blob/main/shortscale.js#L96" target="_blank" rel="noopener">shortscale.js</a> behaves like the built-in <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join" target="_blank" rel="noopener">Array.join</a>, except that it avoids repeating separators by ignoring empty strings.</p>
-<pre><code class="language-js">// concatenate array of strings, separated by sep, ignoring &#39;&#39; values
-function concat(strings, sep) {
-  return strings.reduce((s1, s2) =&gt; s1 + (s1 &amp;&amp; s2 ? sep : &#39;&#39;) + s2, &#39;&#39;)
-}
+<pre><code class="language-js"><span class="token comment">// concatenate array of strings, separated by sep, ignoring '' values</span>
+<span class="token keyword">function</span> <span class="token function">concat</span><span class="token punctuation">(</span><span class="token parameter">strings<span class="token punctuation">,</span> sep</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> strings<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">s1<span class="token punctuation">,</span> s2</span><span class="token punctuation">)</span> <span class="token operator">=></span> s1 <span class="token operator">+</span> <span class="token punctuation">(</span>s1 <span class="token operator">&amp;&amp;</span> s2 <span class="token operator">?</span> sep <span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span> s2<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p>Here&#39;s my <a href="https://github.com/jldec/shortscale-rs/blob/main/src/extra.rs#L374" target="_blank" rel="noopener">first attempt</a> to do something similar in <strong>Rust</strong>.</p>
-<pre><code class="language-rust">type Strvec = Vec&lt;&amp;&#39;static str&gt;;
+<pre><code class="language-rust"><span class="token keyword">type</span> <span class="token type-definition class-name">Strvec</span> <span class="token operator">=</span> <span class="token class-name">Vec</span><span class="token operator">&lt;</span><span class="token operator">&amp;</span><span class="token lifetime-annotation symbol">'static</span> <span class="token keyword">str</span><span class="token operator">></span><span class="token punctuation">;</span>
 
-// concatenate 2 Strvec&#39;s, separated with &quot;and&quot; if both have length
-fn concat_and(v1: Strvec, v2: Strvec) -&gt; Strvec {
-    match (v1.len(), v2.len()) {
-        (_, 0) =&gt; v1,
-        (0, _) =&gt; v2,
-        (_, _) =&gt; [v1, vec![&quot;and&quot;], v2].concat(),
-    }
-}
+<span class="token comment">// concatenate 2 Strvec's, separated with "and" if both have length</span>
+<span class="token keyword">fn</span> <span class="token function-definition function">concat_and</span><span class="token punctuation">(</span>v1<span class="token punctuation">:</span> <span class="token class-name">Strvec</span><span class="token punctuation">,</span> v2<span class="token punctuation">:</span> <span class="token class-name">Strvec</span><span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token class-name">Strvec</span> <span class="token punctuation">{</span>
+    <span class="token keyword">match</span> <span class="token punctuation">(</span>v1<span class="token punctuation">.</span><span class="token function">len</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> v2<span class="token punctuation">.</span><span class="token function">len</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">(</span>_<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">=></span> v1<span class="token punctuation">,</span>
+        <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> _<span class="token punctuation">)</span> <span class="token operator">=></span> v2<span class="token punctuation">,</span>
+        <span class="token punctuation">(</span>_<span class="token punctuation">,</span> _<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">[</span>v1<span class="token punctuation">,</span> <span class="token macro property">vec!</span><span class="token punctuation">[</span><span class="token string">"and"</span><span class="token punctuation">]</span><span class="token punctuation">,</span> v2<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p>&#39;Why Strvec?&#39;, you might ask. In Rust, the primitive string type, used for string literals, is a <a href="https://doc.rust-lang.org/nightly/std/primitive.str.html" target="_blank" rel="noopener">str</a>. My first thought was that shortscale-rs should manipulate collections of str&#39;s. So, instead of using <a href="https://doc.rust-lang.org/nightly/std/string/struct.String.html" target="_blank" rel="noopener">String</a> concatenation, I put str&#39;s into <a href="https://doc.rust-lang.org/nightly/std/vec/struct.Vec.html" target="_blank" rel="noopener">Vec</a>&#39;s.</p>
 <p>Notice the elegant <a href="https://doc.rust-lang.org/rust-by-example/flow_control/match.html" target="_blank" rel="noopener">match</a> syntax - one of my favorite Rust language features. The compiler ensures that the &#39;arms&#39; of the match cover all possible inputs. The result is both readable and concise. The &#39;_&#39; is shorthand for any value.</p>
@@ -155,8 +156,6 @@ shortscale_string_join             5549 ns/iter (+/- 378)
 
 <script>window.pubRef = {"href":"/forays-from-node-to-rust","relPath":"."};</script>
 <script src="./js/jquery-1.12.4.min.js" ></script>
-<script src="./js/highlight-11.4.0.min.js" ></script>
-<script src="./js/pub-pkg-highlight.js" ></script>
 <script src="./pub/pub-ux.js" ></script>
 <!-- copyright -->
 </body>

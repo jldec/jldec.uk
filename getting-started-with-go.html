@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="./css/pubblog.css">
 <link rel="stylesheet" href="./css/open-sans.css">
 <link rel="stylesheet" href="./css/font-awesome.css">
-<link rel="stylesheet" href="./css/highlight-11.4.0-github.css">
+<link rel="stylesheet" href="./css/prism.css">
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -47,6 +47,7 @@
 <nav id="toc">
 <ul>
 <li><strong><a href="./">Home</a></strong></li>
+<li><a href="./what-is-git-lfs">What is git LFS?</a></li>
 <li><a href="./first-impressions-of-the-new-github-projects-beta">First impressions of the new GitHub Projects Beta</a></li>
 <li><a href="./using-gitpod-to-create-a-pr">Using Gitpod to create a PR</a></li>
 <li><a href="./preventing-concurrent-github-actions">Preventing concurrent GitHub Actions</a></li>
@@ -106,114 +107,114 @@ export PATH=${PATH}:${GOROOT}/bin:${GOPATH}/bin
 <blockquote>
 <p>Overall, I was pleasantly surprised with the readability of the code</p>
 </blockquote>
-<pre><code class="language-go">package shortscale
+<pre><code class="language-go"><span class="token keyword">package</span> shortscale
 
-import (
-    &quot;strings&quot;
-)
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"strings"</span>
+<span class="token punctuation">)</span>
 
-// Shortscale converts numbers into English words.
-// Supports positive integers from 0 to 999_999_999_999_999_999.
-// Larger values return &quot;(big number)&quot;.
-func Shortscale(n uint64) string {
-    if n &lt;= 20 {
-        return numwords[n]
-    }
-    if n &gt; 999_999_999_999_999_999 {
-        return &quot;(big number)&quot;
-    }
-    b := new(strings.Builder)
-    writeScale(b, n, 1_000_000_000_000_000) // quadrillions
-    writeScale(b, n, 1_000_000_000_000)     // trillions
-    writeScale(b, n, 1_000_000_000)         // billions
-    writeScale(b, n, 1_000_000)             // millions
-    writeScale(b, n, 1_000)                 // thousands
-    writeHundreds(b, n)
-    writeTensAndUnits(b, n, b.Len() &gt; 0)
-    return b.String()
-}
+<span class="token comment">// Shortscale converts numbers into English words.</span>
+<span class="token comment">// Supports positive integers from 0 to 999_999_999_999_999_999.</span>
+<span class="token comment">// Larger values return "(big number)".</span>
+<span class="token keyword">func</span> <span class="token function">Shortscale</span><span class="token punctuation">(</span>n <span class="token builtin">uint64</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> n <span class="token operator">&lt;=</span> <span class="token number">20</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> numwords<span class="token punctuation">[</span>n<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> n <span class="token operator">></span> <span class="token number">999_999_999_999_999_999</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">"(big number)"</span>
+    <span class="token punctuation">}</span>
+    b <span class="token operator">:=</span> <span class="token function">new</span><span class="token punctuation">(</span>strings<span class="token punctuation">.</span>Builder<span class="token punctuation">)</span>
+    <span class="token function">writeScale</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> n<span class="token punctuation">,</span> <span class="token number">1_000_000_000_000_000</span><span class="token punctuation">)</span> <span class="token comment">// quadrillions</span>
+    <span class="token function">writeScale</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> n<span class="token punctuation">,</span> <span class="token number">1_000_000_000_000</span><span class="token punctuation">)</span>     <span class="token comment">// trillions</span>
+    <span class="token function">writeScale</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> n<span class="token punctuation">,</span> <span class="token number">1_000_000_000</span><span class="token punctuation">)</span>         <span class="token comment">// billions</span>
+    <span class="token function">writeScale</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> n<span class="token punctuation">,</span> <span class="token number">1_000_000</span><span class="token punctuation">)</span>             <span class="token comment">// millions</span>
+    <span class="token function">writeScale</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> n<span class="token punctuation">,</span> <span class="token number">1_000</span><span class="token punctuation">)</span>                 <span class="token comment">// thousands</span>
+    <span class="token function">writeHundreds</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> n<span class="token punctuation">)</span>
+    <span class="token function">writeTensAndUnits</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> n<span class="token punctuation">,</span> b<span class="token punctuation">.</span><span class="token function">Len</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> b<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-func writeTensAndUnits(b *strings.Builder, n uint64, ifAnd bool) {
-    n = n % 100
-    if n == 0 {
-        return
-    }
-    if ifAnd {
-        writeWord(b, &quot;and&quot;)
-    }
-    if n &lt;= 20 {
-        writeWord(b, numwords[n])
-        return
-    }
-    writeWord(b, numwords[n/10*10]) // tens
-    units := n % 10
-    if units &gt; 0 {
-        writeWord(b, numwords[units])
-    }
-}
+<span class="token keyword">func</span> <span class="token function">writeTensAndUnits</span><span class="token punctuation">(</span>b <span class="token operator">*</span>strings<span class="token punctuation">.</span>Builder<span class="token punctuation">,</span> n <span class="token builtin">uint64</span><span class="token punctuation">,</span> ifAnd <span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    n <span class="token operator">=</span> n <span class="token operator">%</span> <span class="token number">100</span>
+    <span class="token keyword">if</span> n <span class="token operator">==</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> ifAnd <span class="token punctuation">{</span>
+        <span class="token function">writeWord</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> <span class="token string">"and"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> n <span class="token operator">&lt;=</span> <span class="token number">20</span> <span class="token punctuation">{</span>
+        <span class="token function">writeWord</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> numwords<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">writeWord</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> numwords<span class="token punctuation">[</span>n<span class="token operator">/</span><span class="token number">10</span><span class="token operator">*</span><span class="token number">10</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment">// tens</span>
+    units <span class="token operator">:=</span> n <span class="token operator">%</span> <span class="token number">10</span>
+    <span class="token keyword">if</span> units <span class="token operator">></span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        <span class="token function">writeWord</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> numwords<span class="token punctuation">[</span>units<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-func writeHundreds(b *strings.Builder, n uint64) {
-    n = n / 100 % 10
-    if n == 0 {
-        return
-    }
-    writeWord(b, numwords[n])
-    writeWord(b, numwords[100])
-}
+<span class="token keyword">func</span> <span class="token function">writeHundreds</span><span class="token punctuation">(</span>b <span class="token operator">*</span>strings<span class="token punctuation">.</span>Builder<span class="token punctuation">,</span> n <span class="token builtin">uint64</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    n <span class="token operator">=</span> n <span class="token operator">/</span> <span class="token number">100</span> <span class="token operator">%</span> <span class="token number">10</span>
+    <span class="token keyword">if</span> n <span class="token operator">==</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">writeWord</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> numwords<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token function">writeWord</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> numwords<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-func writeScale(b *strings.Builder, n uint64, thousands uint64) {
-    n = n / thousands % 1_000
-    if n == 0 {
-        return
-    }
-    writeHundreds(b, n)
-    writeTensAndUnits(b, n, (n/100%10) &gt; 0)
-    writeWord(b, numwords[thousands])
-}
+<span class="token keyword">func</span> <span class="token function">writeScale</span><span class="token punctuation">(</span>b <span class="token operator">*</span>strings<span class="token punctuation">.</span>Builder<span class="token punctuation">,</span> n <span class="token builtin">uint64</span><span class="token punctuation">,</span> thousands <span class="token builtin">uint64</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    n <span class="token operator">=</span> n <span class="token operator">/</span> thousands <span class="token operator">%</span> <span class="token number">1_000</span>
+    <span class="token keyword">if</span> n <span class="token operator">==</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">writeHundreds</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> n<span class="token punctuation">)</span>
+    <span class="token function">writeTensAndUnits</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> n<span class="token punctuation">,</span> <span class="token punctuation">(</span>n<span class="token operator">/</span><span class="token number">100</span><span class="token operator">%</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token function">writeWord</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> numwords<span class="token punctuation">[</span>thousands<span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-func writeWord(b *strings.Builder, word string) {
-    if b.Len() &gt; 0 {
-        b.WriteString(&quot; &quot;)
-    }
-    b.WriteString(word)
-}
+<span class="token keyword">func</span> <span class="token function">writeWord</span><span class="token punctuation">(</span>b <span class="token operator">*</span>strings<span class="token punctuation">.</span>Builder<span class="token punctuation">,</span> word <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> b<span class="token punctuation">.</span><span class="token function">Len</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        b<span class="token punctuation">.</span><span class="token function">WriteString</span><span class="token punctuation">(</span><span class="token string">" "</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    b<span class="token punctuation">.</span><span class="token function">WriteString</span><span class="token punctuation">(</span>word<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-var numwords = map[uint64]string{
-    0:                     &quot;zero&quot;,
-    1:                     &quot;one&quot;,
-    2:                     &quot;two&quot;,
-    3:                     &quot;three&quot;,
-    4:                     &quot;four&quot;,
-    5:                     &quot;five&quot;,
-    6:                     &quot;six&quot;,
-    7:                     &quot;seven&quot;,
-    8:                     &quot;eight&quot;,
-    9:                     &quot;nine&quot;,
-    10:                    &quot;ten&quot;,
-    11:                    &quot;eleven&quot;,
-    12:                    &quot;twelve&quot;,
-    13:                    &quot;thirteen&quot;,
-    14:                    &quot;fourteen&quot;,
-    15:                    &quot;fifteen&quot;,
-    16:                    &quot;sixteen&quot;,
-    17:                    &quot;seventeen&quot;,
-    18:                    &quot;eighteen&quot;,
-    19:                    &quot;nineteen&quot;,
-    20:                    &quot;twenty&quot;,
-    30:                    &quot;thirty&quot;,
-    40:                    &quot;forty&quot;,
-    50:                    &quot;fifty&quot;,
-    60:                    &quot;sixty&quot;,
-    70:                    &quot;seventy&quot;,
-    80:                    &quot;eighty&quot;,
-    90:                    &quot;ninety&quot;,
-    100:                   &quot;hundred&quot;,
-    1_000:                 &quot;thousand&quot;,
-    1_000_000:             &quot;million&quot;,
-    1_000_000_000:         &quot;billion&quot;,
-    1_000_000_000_000:     &quot;trillion&quot;,
-    1_000_000_000_000_000: &quot;quadrillion&quot;,
-}
+<span class="token keyword">var</span> numwords <span class="token operator">=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">uint64</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span>
+    <span class="token number">0</span><span class="token punctuation">:</span>                     <span class="token string">"zero"</span><span class="token punctuation">,</span>
+    <span class="token number">1</span><span class="token punctuation">:</span>                     <span class="token string">"one"</span><span class="token punctuation">,</span>
+    <span class="token number">2</span><span class="token punctuation">:</span>                     <span class="token string">"two"</span><span class="token punctuation">,</span>
+    <span class="token number">3</span><span class="token punctuation">:</span>                     <span class="token string">"three"</span><span class="token punctuation">,</span>
+    <span class="token number">4</span><span class="token punctuation">:</span>                     <span class="token string">"four"</span><span class="token punctuation">,</span>
+    <span class="token number">5</span><span class="token punctuation">:</span>                     <span class="token string">"five"</span><span class="token punctuation">,</span>
+    <span class="token number">6</span><span class="token punctuation">:</span>                     <span class="token string">"six"</span><span class="token punctuation">,</span>
+    <span class="token number">7</span><span class="token punctuation">:</span>                     <span class="token string">"seven"</span><span class="token punctuation">,</span>
+    <span class="token number">8</span><span class="token punctuation">:</span>                     <span class="token string">"eight"</span><span class="token punctuation">,</span>
+    <span class="token number">9</span><span class="token punctuation">:</span>                     <span class="token string">"nine"</span><span class="token punctuation">,</span>
+    <span class="token number">10</span><span class="token punctuation">:</span>                    <span class="token string">"ten"</span><span class="token punctuation">,</span>
+    <span class="token number">11</span><span class="token punctuation">:</span>                    <span class="token string">"eleven"</span><span class="token punctuation">,</span>
+    <span class="token number">12</span><span class="token punctuation">:</span>                    <span class="token string">"twelve"</span><span class="token punctuation">,</span>
+    <span class="token number">13</span><span class="token punctuation">:</span>                    <span class="token string">"thirteen"</span><span class="token punctuation">,</span>
+    <span class="token number">14</span><span class="token punctuation">:</span>                    <span class="token string">"fourteen"</span><span class="token punctuation">,</span>
+    <span class="token number">15</span><span class="token punctuation">:</span>                    <span class="token string">"fifteen"</span><span class="token punctuation">,</span>
+    <span class="token number">16</span><span class="token punctuation">:</span>                    <span class="token string">"sixteen"</span><span class="token punctuation">,</span>
+    <span class="token number">17</span><span class="token punctuation">:</span>                    <span class="token string">"seventeen"</span><span class="token punctuation">,</span>
+    <span class="token number">18</span><span class="token punctuation">:</span>                    <span class="token string">"eighteen"</span><span class="token punctuation">,</span>
+    <span class="token number">19</span><span class="token punctuation">:</span>                    <span class="token string">"nineteen"</span><span class="token punctuation">,</span>
+    <span class="token number">20</span><span class="token punctuation">:</span>                    <span class="token string">"twenty"</span><span class="token punctuation">,</span>
+    <span class="token number">30</span><span class="token punctuation">:</span>                    <span class="token string">"thirty"</span><span class="token punctuation">,</span>
+    <span class="token number">40</span><span class="token punctuation">:</span>                    <span class="token string">"forty"</span><span class="token punctuation">,</span>
+    <span class="token number">50</span><span class="token punctuation">:</span>                    <span class="token string">"fifty"</span><span class="token punctuation">,</span>
+    <span class="token number">60</span><span class="token punctuation">:</span>                    <span class="token string">"sixty"</span><span class="token punctuation">,</span>
+    <span class="token number">70</span><span class="token punctuation">:</span>                    <span class="token string">"seventy"</span><span class="token punctuation">,</span>
+    <span class="token number">80</span><span class="token punctuation">:</span>                    <span class="token string">"eighty"</span><span class="token punctuation">,</span>
+    <span class="token number">90</span><span class="token punctuation">:</span>                    <span class="token string">"ninety"</span><span class="token punctuation">,</span>
+    <span class="token number">100</span><span class="token punctuation">:</span>                   <span class="token string">"hundred"</span><span class="token punctuation">,</span>
+    <span class="token number">1_000</span><span class="token punctuation">:</span>                 <span class="token string">"thousand"</span><span class="token punctuation">,</span>
+    <span class="token number">1_000_000</span><span class="token punctuation">:</span>             <span class="token string">"million"</span><span class="token punctuation">,</span>
+    <span class="token number">1_000_000_000</span><span class="token punctuation">:</span>         <span class="token string">"billion"</span><span class="token punctuation">,</span>
+    <span class="token number">1_000_000_000_000</span><span class="token punctuation">:</span>     <span class="token string">"trillion"</span><span class="token punctuation">,</span>
+    <span class="token number">1_000_000_000_000_000</span><span class="token punctuation">:</span> <span class="token string">"quadrillion"</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h2 id="tests-and-benchmarks">Tests and benchmarks</h2>
 <p>The <a href="https://pkg.go.dev/testing" target="_blank" rel="noopener">testing</a> package provides support for running tests and benchmarks with <code>go test</code>. The GitHub Action <a href="https://github.com/jldec/shortscale-go/blob/main/.github/workflows/ci.yaml#L25" target="_blank" rel="noopener">workflow</a> for shortscale-go make use of this.</p>
@@ -247,9 +248,9 @@ cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
 go: creating new go.mod: module github.com/jldec/shortscale-go
 </code></pre>
 <p>This created a new <strong>go.mod</strong> file with the following content.</p>
-<pre><code class="language-js">module github.com/jldec/shortscale-go
+<pre><code class="language-js">module github<span class="token punctuation">.</span>com<span class="token operator">/</span>jldec<span class="token operator">/</span>shortscale<span class="token operator">-</span>go
 
-go 1.16
+go <span class="token number">1.16</span>
 </code></pre>
 <p>I was a little surprised that there was no way to indicate the module version inside <code>go.mod</code>. Go <a href="https://blog.golang.org/publishing-go-modules" target="_blank" rel="noopener">relies on git tags</a> in the form vx.x.x for this. As I pushed each version to GitHub, I used the GitHub <a href="https://github.com/jldec/shortscale-go/releases" target="_blank" rel="noopener">Releases</a> UI to create the tag.</p>
 <h2 id="pkggodev">pkg.go.dev</h2>
@@ -276,8 +277,6 @@ go 1.16
 
 <script>window.pubRef = {"href":"/getting-started-with-go","relPath":"."};</script>
 <script src="./js/jquery-1.12.4.min.js" ></script>
-<script src="./js/highlight-11.4.0.min.js" ></script>
-<script src="./js/pub-pkg-highlight.js" ></script>
 <script src="./pub/pub-ux.js" ></script>
 <!-- copyright -->
 </body>

@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="./css/pubblog.css">
 <link rel="stylesheet" href="./css/open-sans.css">
 <link rel="stylesheet" href="./css/font-awesome.css">
-<link rel="stylesheet" href="./css/highlight-11.4.0-github.css">
+<link rel="stylesheet" href="./css/prism.css">
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -47,6 +47,7 @@
 <nav id="toc">
 <ul>
 <li><strong><a href="./">Home</a></strong></li>
+<li><a href="./what-is-git-lfs">What is git LFS?</a></li>
 <li><a href="./first-impressions-of-the-new-github-projects-beta">First impressions of the new GitHub Projects Beta</a></li>
 <li><a href="./using-gitpod-to-create-a-pr">Using Gitpod to create a PR</a></li>
 <li><a href="./preventing-concurrent-github-actions">Preventing concurrent GitHub Actions</a></li>
@@ -89,24 +90,24 @@
 <h2 id="counting-http-requests">Counting HTTP requests</h2>
 <p>The <a href="https://github.com/jldec/racey-go/blob/main/main.go" target="_blank" rel="noopener">server</a> below counts HTTP requests, and returns the latest count on each request. </p>
 <p><em>To follow along, clone <a href="https://github.com/jldec/racey-go" target="_blank" rel="noopener">https://github.com/jldec/racey-go</a>, and start the server with &#39;go run .&#39;</em></p>
-<pre><code class="language-go">package main
+<pre><code class="language-go"><span class="token keyword">package</span> main
 
-import (
-    &quot;fmt&quot;
-    &quot;net/http&quot;
-)
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"fmt"</span>
+    <span class="token string">"net/http"</span>
+<span class="token punctuation">)</span>
 
-func main() {
-    var count uint64 = 0
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> count <span class="token builtin">uint64</span> <span class="token operator">=</span> <span class="token number">0</span>
 
-    http.HandleFunc(&quot;/&quot;, func(w http.ResponseWriter, r *http.Request) {
-        count++
-        fmt.Fprintln(w, count)
-    })
+    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        count<span class="token operator">++</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Fprintln</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> count<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
 
-    fmt.Println(&quot;Go listening on port 3000&quot;)
-    http.ListenAndServe(&quot;:3000&quot;, nil)
-}
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Go listening on port 3000"</span><span class="token punctuation">)</span>
+    http<span class="token punctuation">.</span><span class="token function">ListenAndServe</span><span class="token punctuation">(</span><span class="token string">":3000"</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <pre><code class="language-sh">$ curl localhost:3000
 1
@@ -165,31 +166,31 @@ Previous write at 0x00c000138280 by goroutine 9:
 <p>Goroutines provide low-overhead threading. They are easy to create and scale well on multi-core processors.</p>
 <p>The Go runtime can schedule many concurrent goroutines across a small number of OS threads. Under the covers, this is how the <a href="https://golang.org/src/net/http/server.go#L3013" target="_blank" rel="noopener">http</a> library handles concurrent web requests.</p>
 <p>Let&#39;s start with an example. You can run it in the <a href="https://play.golang.org/p/HdH4UQEEXuU" target="_blank" rel="noopener">Go Playground</a>.</p>
-<pre><code class="language-go">package main
+<pre><code class="language-go"><span class="token keyword">package</span> main
 
-import (
-    &quot;fmt&quot;
-    &quot;time&quot;
-)
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"fmt"</span>
+    <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
 
-func main() {
-    ch := make(chan string)
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">string</span><span class="token punctuation">)</span>
 
-    // start 2 countdowns in parallel goroutines
-    go countdown(&quot;crew-1&quot;, ch)
-    go countdown(&quot;crew-2&quot;, ch)
+    <span class="token comment">// start 2 countdowns in parallel goroutines</span>
+    <span class="token keyword">go</span> <span class="token function">countdown</span><span class="token punctuation">(</span><span class="token string">"crew-1"</span><span class="token punctuation">,</span> ch<span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">countdown</span><span class="token punctuation">(</span><span class="token string">"crew-2"</span><span class="token punctuation">,</span> ch<span class="token punctuation">)</span>
 
-    fmt.Println(&lt;-ch) // block waiting to receive 1st string
-    fmt.Println(&lt;-ch) // block waiting to receive 2nd string
-}
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">&lt;-</span>ch<span class="token punctuation">)</span> <span class="token comment">// block waiting to receive 1st string</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">&lt;-</span>ch<span class="token punctuation">)</span> <span class="token comment">// block waiting to receive 2nd string</span>
+<span class="token punctuation">}</span>
 
-func countdown(name string, ch chan&lt;- string) {
-    for i := 10; i &gt; 0; i-- {
-        fmt.Println(name, i)
-        time.Sleep(1 * time.Second)
-    }
-    ch &lt;- &quot;blastoff &quot; + name
-}
+<span class="token keyword">func</span> <span class="token function">countdown</span><span class="token punctuation">(</span>name <span class="token builtin">string</span><span class="token punctuation">,</span> ch <span class="token keyword">chan</span><span class="token operator">&lt;-</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">10</span><span class="token punctuation">;</span> i <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">--</span> <span class="token punctuation">{</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+        time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    ch <span class="token operator">&lt;-</span> <span class="token string">"blastoff "</span> <span class="token operator">+</span> name
+<span class="token punctuation">}</span>
 </code></pre>
 <p>Each &#39;go countdown()&#39; starts a new <a href="https://tour.golang.org/concurrency/1" target="_blank" rel="noopener">goroutine</a>. Notice how the countdowns are interleaved in the output.</p>
 <pre><code>...
@@ -219,91 +220,91 @@ blastoff crew-1
 <li><strong>CounterChannel</strong> serializes all reads and writes inside 1 goroutine with 2 channels.</li>
 </ol>
 <p>All 3 types implement a Counter interface:</p>
-<pre><code class="language-go">type Counter interface {
-    Get() uint32 // get current counter value
-    Inc()        // increment by 1
-}
+<pre><code class="language-go"><span class="token keyword">type</span> Counter <span class="token keyword">interface</span> <span class="token punctuation">{</span>
+    <span class="token function">Get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">uint32</span> <span class="token comment">// get current counter value</span>
+    <span class="token function">Inc</span><span class="token punctuation">(</span><span class="token punctuation">)</span>        <span class="token comment">// increment by 1</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p>The <a href="https://github.com/jldec/racey-go/blob/fix-with-counter-go/main.go" target="_blank" rel="noopener">modified server</a> will work with any of the 3 implementations, and no data race should be detected.</p>
-<pre><code class="language-go">package main
+<pre><code class="language-go"><span class="token keyword">package</span> main
 
-import (
-    &quot;fmt&quot;
-    &quot;net/http&quot;
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"fmt"</span>
+    <span class="token string">"net/http"</span>
 
-    counter &quot;github.com/jldec/counter-go&quot;
-)
+    counter <span class="token string">"github.com/jldec/counter-go"</span>
+<span class="token punctuation">)</span>
 
-func main() {
-    count := new(counter.CounterAtomic)
-    // count := new(counter.CounterMutex)
-    // count := counter.NewCounterChannel()
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    count <span class="token operator">:=</span> <span class="token function">new</span><span class="token punctuation">(</span>counter<span class="token punctuation">.</span>CounterAtomic<span class="token punctuation">)</span>
+    <span class="token comment">// count := new(counter.CounterMutex)</span>
+    <span class="token comment">// count := counter.NewCounterChannel()</span>
 
-    http.HandleFunc(&quot;/&quot;, func(w http.ResponseWriter, r *http.Request) {
-        count.Inc()
-        fmt.Fprintln(w, count.Get())
-    })
+    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        count<span class="token punctuation">.</span><span class="token function">Inc</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Fprintln</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> count<span class="token punctuation">.</span><span class="token function">Get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
 
-    fmt.Println(&quot;Go listening on port 3000&quot;)
-    http.ListenAndServe(&quot;:3000&quot;, nil)
-}
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Go listening on port 3000"</span><span class="token punctuation">)</span>
+    http<span class="token punctuation">.</span><span class="token function">ListenAndServe</span><span class="token punctuation">(</span><span class="token string">":3000"</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h3 id="coordination-with-channels">Coordination with channels</h3>
 <p>Of the 3 implementations, <a href="https://github.com/jldec/counter-go/blob/main/counter_channel.go" target="_blank" rel="noopener">CounterChannel</a> is the most interesting. All access to the counter goes through 1 goroutine which uses a <a href="https://tour.golang.org/concurrency/5" target="_blank" rel="noopener">select</a> to wait for either a read or a write on one of two channels.</p>
 <p>Can you tell why neither <code>Inc()</code> nor <code>Get()</code> should block?</p>
 <pre><code class="language-go">
-package counter
+<span class="token keyword">package</span> counter
 
-// Thread-safe counter
-// Uses 2 Channels to coordinate reads and writes.
-// Must be initialized with NewCounterChannel().
-type CounterChannel struct {
-    readCh  chan uint64
-    writeCh chan int
-}
+<span class="token comment">// Thread-safe counter</span>
+<span class="token comment">// Uses 2 Channels to coordinate reads and writes.</span>
+<span class="token comment">// Must be initialized with NewCounterChannel().</span>
+<span class="token keyword">type</span> CounterChannel <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+    readCh  <span class="token keyword">chan</span> <span class="token builtin">uint64</span>
+    writeCh <span class="token keyword">chan</span> <span class="token builtin">int</span>
+<span class="token punctuation">}</span>
 
-// NewCounterChannel() is required to initialize a Counter.
-func NewCounterChannel() *CounterChannel {
-    c := &amp;CounterChannel{
-        readCh:  make(chan uint64),
-        writeCh: make(chan int),
-    }
+<span class="token comment">// NewCounterChannel() is required to initialize a Counter.</span>
+<span class="token keyword">func</span> <span class="token function">NewCounterChannel</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span>CounterChannel <span class="token punctuation">{</span>
+    c <span class="token operator">:=</span> <span class="token operator">&amp;</span>CounterChannel<span class="token punctuation">{</span>
+        readCh<span class="token punctuation">:</span>  <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">uint64</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        writeCh<span class="token punctuation">:</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
 
-    // The actual counter value lives inside this goroutine.
-    // It can only be accessed for R/W via one of the channels.
-    go func() {
-        var count uint64 = 0
-        for {
-            select {
-            // Reading from readCh is equivalent to reading count.
-            case c.readCh &lt;- count:
-            // Writing to the writeCh increments count.
-            case &lt;-c.writeCh:
-                count++
-            }
-        }
-    }()
+    <span class="token comment">// The actual counter value lives inside this goroutine.</span>
+    <span class="token comment">// It can only be accessed for R/W via one of the channels.</span>
+    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> count <span class="token builtin">uint64</span> <span class="token operator">=</span> <span class="token number">0</span>
+        <span class="token keyword">for</span> <span class="token punctuation">{</span>
+            <span class="token keyword">select</span> <span class="token punctuation">{</span>
+            <span class="token comment">// Reading from readCh is equivalent to reading count.</span>
+            <span class="token keyword">case</span> c<span class="token punctuation">.</span>readCh <span class="token operator">&lt;-</span> count<span class="token punctuation">:</span>
+            <span class="token comment">// Writing to the writeCh increments count.</span>
+            <span class="token keyword">case</span> <span class="token operator">&lt;-</span>c<span class="token punctuation">.</span>writeCh<span class="token punctuation">:</span>
+                count<span class="token operator">++</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-    return c
-}
+    <span class="token keyword">return</span> c
+<span class="token punctuation">}</span>
 
-// Increment counter by pushing an arbitrary int to the write channel.
-func (c *CounterChannel) Inc() {
-    c.check()
-    c.writeCh &lt;- 1
-}
+<span class="token comment">// Increment counter by pushing an arbitrary int to the write channel.</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>c <span class="token operator">*</span>CounterChannel<span class="token punctuation">)</span> <span class="token function">Inc</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    c<span class="token punctuation">.</span><span class="token function">check</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    c<span class="token punctuation">.</span>writeCh <span class="token operator">&lt;-</span> <span class="token number">1</span>
+<span class="token punctuation">}</span>
 
-// Get current counter value from the read channel.
-func (c *CounterChannel) Get() uint64 {
-    c.check()
-    return &lt;-c.readCh
-}
+<span class="token comment">// Get current counter value from the read channel.</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>c <span class="token operator">*</span>CounterChannel<span class="token punctuation">)</span> <span class="token function">Get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">uint64</span> <span class="token punctuation">{</span>
+    c<span class="token punctuation">.</span><span class="token function">check</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token operator">&lt;-</span>c<span class="token punctuation">.</span>readCh
+<span class="token punctuation">}</span>
 
-func (c *CounterChannel) check() {
-    if c.readCh == nil {
-        panic(&quot;Uninitialized Counter, requires NewCounterChannel()&quot;)
-    }
-}
+<span class="token keyword">func</span> <span class="token punctuation">(</span>c <span class="token operator">*</span>CounterChannel<span class="token punctuation">)</span> <span class="token function">check</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> c<span class="token punctuation">.</span>readCh <span class="token operator">==</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+        <span class="token function">panic</span><span class="token punctuation">(</span><span class="token string">"Uninitialized Counter, requires NewCounterChannel()"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h3 id="benchmarks">Benchmarks</h3>
 <p>All 3 <a href="https://github.com/jldec/counter-go" target="_blank" rel="noopener">implementations</a> are fast. Serializing everything through a goroutine with channels, costs only a few hundred ns for a single read or write. When constrained to a single OS thread, the cost of goroutines is even lower.</p>
@@ -363,8 +364,6 @@ BenchmarkCounter_2/Channel_10_reads              47889      25054 ns/op
 
 <script>window.pubRef = {"href":"/getting-started-with-go-part-3-goroutines-and-channels","relPath":"."};</script>
 <script src="./js/jquery-1.12.4.min.js" ></script>
-<script src="./js/highlight-11.4.0.min.js" ></script>
-<script src="./js/pub-pkg-highlight.js" ></script>
 <script src="./pub/pub-ux.js" ></script>
 <!-- copyright -->
 </body>

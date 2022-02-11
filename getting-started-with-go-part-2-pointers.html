@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="./css/pubblog.css">
 <link rel="stylesheet" href="./css/open-sans.css">
 <link rel="stylesheet" href="./css/font-awesome.css">
-<link rel="stylesheet" href="./css/highlight-11.4.0-github.css">
+<link rel="stylesheet" href="./css/prism.css">
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -47,6 +47,7 @@
 <nav id="toc">
 <ul>
 <li><strong><a href="./">Home</a></strong></li>
+<li><a href="./what-is-git-lfs">What is git LFS?</a></li>
 <li><a href="./first-impressions-of-the-new-github-projects-beta">First impressions of the new GitHub Projects Beta</a></li>
 <li><a href="./using-gitpod-to-create-a-pr">Using Gitpod to create a PR</a></li>
 <li><a href="./preventing-concurrent-github-actions">Preventing concurrent GitHub Actions</a></li>
@@ -88,66 +89,66 @@
 <p>If you&#39;d like to follow along, and try out out the code in this article, all you need is the Go <a href="https://play.golang.org/p/-UiUJFrloVT" target="_blank" rel="noopener">playground</a> to run the examples.</p>
 <h2 id="pointers">Pointers</h2>
 <p>The <a href="https://github.com/jldec/shortscale-go/blob/main/shortscale.go" target="_blank" rel="noopener">shortscale</a> package which I covered last time, uses a string <a href="https://pkg.go.dev/strings#Builder" target="_blank" rel="noopener">Builder</a>. Here is the example from the Builder docs.</p>
-<pre><code class="language-go">package main
+<pre><code class="language-go"><span class="token keyword">package</span> main
 
-import (
-    &quot;fmt&quot;
-    &quot;strings&quot;
-)
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"fmt"</span>
+    <span class="token string">"strings"</span>
+<span class="token punctuation">)</span>
 
-func main() {
-    var b strings.Builder
-    for i := 3; i &gt;= 1; i-- {
-        fmt.Fprintf(&amp;b, &quot;%d...&quot;, i)
-    }
-    b.WriteString(&quot;ignition&quot;)
-    fmt.Println(b.String())
-}
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> b strings<span class="token punctuation">.</span>Builder
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">3</span><span class="token punctuation">;</span> i <span class="token operator">>=</span> <span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">--</span> <span class="token punctuation">{</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Fprintf</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>b<span class="token punctuation">,</span> <span class="token string">"%d..."</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    b<span class="token punctuation">.</span><span class="token function">WriteString</span><span class="token punctuation">(</span><span class="token string">"ignition"</span><span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p>Notice that <code>var b</code> is an instance of the Builder. When you run the code, it will output: <em>3...2...1...ignition</em>.</p>
 <h2 id="pointer-receiver-methods-and-interfaces">Pointer receiver methods and interfaces</h2>
 <p>The first argument to fmt.Fprintf is <code>&amp;b</code>, a <a href="https://tour.golang.org/moretypes/1" target="_blank" rel="noopener">pointer</a> to b. This is necessary, because <a href="https://pkg.go.dev/fmt#Fprintf" target="_blank" rel="noopener">fmt.Fprintf</a> expects an <a href="https://pkg.go.dev/io#Writer" target="_blank" rel="noopener">io.Writer</a> interface.</p>
-<pre><code class="language-go">type Writer interface {
-    Write(p []byte) (n int, err error)
-}
+<pre><code class="language-go"><span class="token keyword">type</span> Writer <span class="token keyword">interface</span> <span class="token punctuation">{</span>
+    <span class="token function">Write</span><span class="token punctuation">(</span>p <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>n <span class="token builtin">int</span><span class="token punctuation">,</span> err <span class="token builtin">error</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p>The <a href="https://pkg.go.dev/strings#Builder.Write" target="_blank" rel="noopener">Builder.Write</a> method matches the io.Writer interface. Notice the pointer syntax in the method receiver after the <code>func</code> keyword.</p>
-<pre><code class="language-go">func (b *Builder) Write(p []byte) (int, error)
+<pre><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>b <span class="token operator">*</span>Builder<span class="token punctuation">)</span> <span class="token function">Write</span><span class="token punctuation">(</span>p <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token builtin">error</span><span class="token punctuation">)</span>
 </code></pre>
 <p>I was tempted to replace <code>Fprintf(&amp;b, ...)</code> with <code>Fprintf(b, ...)</code>, to make it more consistent with the <code>b.WriteString()</code> and <code>b.String()</code> further down, but doing this causes the compiler to complain:</p>
 <p><em>&quot;cannot use b (type strings.Builder) as type io.Writer in argument to fmt.Fprintf:
 strings.Builder does not implement io.Writer (<strong>Write method has pointer receiver</strong>)&quot;</em></p>
 <h2 id="value-vs-pointer-function-arguments">Value vs. pointer function arguments</h2>
 <p>What if, instead of depending on the Writer interface, we called our own <code>write()</code> function?</p>
-<pre><code class="language-go">func main() {
-    var b strings.Builder
-    for i := 3; i &gt;= 1; i-- {
-        write(b, fmt.Sprintf(&quot;%d...&quot;, i))
-    }
-    b.WriteString(&quot;ignition&quot;)
-    fmt.Println(b.String())
-}
+<pre><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> b strings<span class="token punctuation">.</span>Builder
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">3</span><span class="token punctuation">;</span> i <span class="token operator">>=</span> <span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">--</span> <span class="token punctuation">{</span>
+        <span class="token function">write</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> fmt<span class="token punctuation">.</span><span class="token function">Sprintf</span><span class="token punctuation">(</span><span class="token string">"%d..."</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    b<span class="token punctuation">.</span><span class="token function">WriteString</span><span class="token punctuation">(</span><span class="token string">"ignition"</span><span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-func write(b strings.Builder, s string) {
-    b.WriteString(s)
-}
+<span class="token keyword">func</span> <span class="token function">write</span><span class="token punctuation">(</span>b strings<span class="token punctuation">.</span>Builder<span class="token punctuation">,</span> s <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    b<span class="token punctuation">.</span><span class="token function">WriteString</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p>Running the code above in the <a href="https://pkg.go.dev/strings#Builder" target="_blank" rel="noopener">example sandbox</a> outputs just the word <em>ignition</em>. </p>
 <p>The 3 calls to <code>write(b)</code> do not modify the builder declared at the top.</p>
 <p>This makes sense, because passing a struct to a function <a href="https://tour.golang.org/methods/4" target="_blank" rel="noopener">copies</a> the struct value.</p>
 <p>To fix this, we have to use a pointer to pass the struct by reference, and we have to invoke the function with <code>write(&amp;b, ...)</code>. This works, but it doesn&#39;t make the code any more consistent.</p>
-<pre><code class="language-go">func main() {
-    var b strings.Builder
-    for i := 3; i &gt;= 1; i-- {
-        write(&amp;b, fmt.Sprintf(&quot;%d...&quot;, i))
-    }
-    b.WriteString(&quot;ignition&quot;)
-    fmt.Println(b.String())
-}
+<pre><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> b strings<span class="token punctuation">.</span>Builder
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">3</span><span class="token punctuation">;</span> i <span class="token operator">>=</span> <span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">--</span> <span class="token punctuation">{</span>
+        <span class="token function">write</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>b<span class="token punctuation">,</span> fmt<span class="token punctuation">.</span><span class="token function">Sprintf</span><span class="token punctuation">(</span><span class="token string">"%d..."</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    b<span class="token punctuation">.</span><span class="token function">WriteString</span><span class="token punctuation">(</span><span class="token string">"ignition"</span><span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-func write(b *strings.Builder, s string) {
-    b.WriteString(s)
-}
+<span class="token keyword">func</span> <span class="token function">write</span><span class="token punctuation">(</span>b <span class="token operator">*</span>strings<span class="token punctuation">.</span>Builder<span class="token punctuation">,</span> s <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    b<span class="token punctuation">.</span><span class="token function">WriteString</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h2 id="why-do-the-method-calls-work">Why do the method calls work?</h2>
 <p>Why are we allowed to use <code>b</code> instead of <code>&amp;b</code> in front of <a href="https://pkg.go.dev/strings#Builder.WriteString" target="_blank" rel="noopener">b.WriteString</a> and <a href="https://pkg.go.dev/strings#Builder.String" target="_blank" rel="noopener">b.String</a>? This is explained in <a href="https://tour.golang.org/methods/6" target="_blank" rel="noopener">the tour</a> as well.</p>
@@ -155,14 +156,14 @@ func write(b *strings.Builder, s string) {
 <h2 id="start-with-a-pointer">Start with a pointer</h2>
 <p>If all this mixing of values and pointers feels inconsistent, why not start with a pointer from the beginning?</p>
 <p>The following code will compile just fine, but can you tell what&#39;s wrong with it?</p>
-<pre><code class="language-go">func main() {
-    var b *strings.Builder
-    for i := 3; i &gt;= 1; i-- {
-        fmt.Fprintf(b, &quot;%d...&quot;, i)
-    }
-    b.WriteString(&quot;ignition&quot;)
-    fmt.Println(b.String())
-}
+<pre><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> b <span class="token operator">*</span>strings<span class="token punctuation">.</span>Builder
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">3</span><span class="token punctuation">;</span> i <span class="token operator">>=</span> <span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">--</span> <span class="token punctuation">{</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Fprintf</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> <span class="token string">"%d..."</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    b<span class="token punctuation">.</span><span class="token function">WriteString</span><span class="token punctuation">(</span><span class="token string">"ignition"</span><span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p>The declaration above results in a nil pointer panic at run time, because b is uninitialized.</p>
 <blockquote>
@@ -170,20 +171,20 @@ func write(b *strings.Builder, s string) {
 </blockquote>
 <h2 id="create-the-builder-with-new">Create the Builder with new()</h2>
 <p>Here is one way to initialize a pointer so that it references a new Builder.</p>
-<pre><code class="language-go">func main() {
-    b := new(strings.Builder)
-    for i := 3; i &gt;= 1; i-- {
-        fmt.Fprintf(b, &quot;%d...&quot;, i)
-    }
-    b.WriteString(&quot;ignition&quot;)
-    fmt.Println(b.String())
-}
+<pre><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    b <span class="token operator">:=</span> <span class="token function">new</span><span class="token punctuation">(</span>strings<span class="token punctuation">.</span>Builder<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">3</span><span class="token punctuation">;</span> i <span class="token operator">>=</span> <span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">--</span> <span class="token punctuation">{</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Fprintf</span><span class="token punctuation">(</span>b<span class="token punctuation">,</span> <span class="token string">"%d..."</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    b<span class="token punctuation">.</span><span class="token function">WriteString</span><span class="token punctuation">(</span><span class="token string">"ignition"</span><span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p><code>new(strings.Builder)</code> returns a pointer to a freshly allocated Builder, which we can use for both functions and pointer receiver methods. This is the pattern which I now use in <a href="https://github.com/jldec/shortscale-go/blob/2485be23ef48660d8913b2ac884030220dc82d74/shortscale.go#L17-L24" target="_blank" rel="noopener">shortscale-go</a>.</p>
 <p>An alternative, which does the same thing, is the more explicit <a href="https://tour.golang.org/moretypes/5" target="_blank" rel="noopener">struct literal</a> shown below.</p>
-<pre><code class="language-go">func main() {
-    b := &amp;strings.Builder{}
-    ...
+<pre><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    b <span class="token operator">:=</span> <span class="token operator">&amp;</span>strings<span class="token punctuation">.</span>Builder<span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token operator">...</span>
 </code></pre>
 <blockquote>
 <p>There&#39;s no avoiding pointers in Go.<br>Learn the quirks and the gotchas today.<br>✨ Keep learning! ✨</p>
@@ -205,8 +206,6 @@ func write(b *strings.Builder, s string) {
 
 <script>window.pubRef = {"href":"/getting-started-with-go-part-2-pointers","relPath":"."};</script>
 <script src="./js/jquery-1.12.4.min.js" ></script>
-<script src="./js/highlight-11.4.0.min.js" ></script>
-<script src="./js/pub-pkg-highlight.js" ></script>
 <script src="./pub/pub-ux.js" ></script>
 <!-- copyright -->
 </body>
