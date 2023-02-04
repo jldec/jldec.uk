@@ -99,12 +99,13 @@ size 280654
 <ol>
 <li><p>Place <code>git-lfs</code> on the path.<br>I pulled the latest binary for macOS arm64 from <a href="https://github.com/git-lfs/git-lfs/releases" target="_blank" rel="noopener">GitHub releases</a>.</p>
 </li>
-<li><p>Configure git to use LFS with <code>git lfs install</code></p>
+<li><p>Configure git to use LFS with <code>git lfs install</code>.</p>
 </li>
 </ol>
+<p>Both of these steps are included in the <code>install.sh</code> script, in the GitHub release.</p>
 <h2 id="why-is-the-binary-called-git-lfs">Why is the binary called &#39;git-lfs&#39;?</h2>
-<p>A git extension is a binary called <code>git-command</code>, which you can invoke with <code>git command</code>.
-Running <code>git lfs</code> gives you a nice summary of the available commands with examples.</p>
+<p>A git extension is a binary prefixed <code>git-</code>.</p>
+<p>Running <code>git lfs</code> invokes <code>git-lfs</code>, which gives you a nice summary of the available commands.</p>
 <pre><code>To get started with Git LFS, the following commands can be used.
 
  1. Setup Git LFS on your system. You only have to do this once per
@@ -147,7 +148,7 @@ Once the association is made, you can work with those files normally, and git-lf
 <h2 id="example-repo">Example repo</h2>
 <p>This repo lives at <a href="https://github.com/jldec/lfs-test" target="_blank" rel="noopener">github.com/jldec/lfs-test</a></p>
 <pre><code class="language-sh">$ git init
-Initialized empty Git repository in /Users/jldec/gitpod/lfs-test/.git/
+Initialized empty Git repository in /Users/jldec/lfs-test/.git/
 
 $ git lfs track &#39;*.png&#39;
 Tracking &quot;*.png&quot;
