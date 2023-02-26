@@ -96,6 +96,8 @@
 <li>Build and publish the incomplete <a href="https://github.com/jldec/shortscale-py/tree/bb9b026b9097ce9c601e632a9d1f74a7da6adf29" target="_blank" rel="noopener">v0.1</a> module.</li>
 <li>Complete the logic <a href="https://github.com/jldec/shortscale-py/commit/6ab4a4b541590a60ebe2944473094465ba8f14f5" target="_blank" rel="noopener">v1.0.0</a>.</li>
 <li>Benchmarks</li>
+<li>Python in the browser</li>
+<li>Jupyter notebooks</li>
 </ol>
 <h2 id="install-python-v310-the-hard-way">Install python v3.10 (the hard way)</h2>
 <p>Installing Python on macOS is easiest with <a href="https://www.python.org/downloads/macos/" target="_blank" rel="noopener">the official installer</a> or <a href="https://realPython.com/installing-python/#how-to-install-from-homebrew" target="_blank" rel="noopener">with homebrew</a>. </p>
@@ -127,12 +129,11 @@ export PATH=$HOME/.pyenv/versions/3.10.9/bin:$PATH
 <h2 id="virtual-environments-and-pip">Virtual environments and pip</h2>
 <p>Python <a href="https://docs.python.org/3/tutorial/modules.html" target="_blank" rel="noopener">modules</a> and their dependencies can be installed from <a href="https://pypi.org/" target="_blank" rel="noopener">pypi.org</a> using <code>pip install</code>.</p>
 <p>Configuring a <a href="https://docs.python.org/3/library/venv.html" target="_blank" rel="noopener">virtual environment</a> will isolate modules under a <code>.venv</code> directory, which is easy to clean up, rather than installing everything globally.</p>
-<p>I created a venv under my home directory using the following command</p>
+<p>I created a venv under my home directory.</p>
 <pre><code class="language-sh">python3 -m venv ~/.venv
 </code></pre>
-<p>Instead of &quot;activating&quot; the venv, which changes the prompt, I prefer to prepend it directly onto my PATH for now.</p>
+<p>Instead of &quot;activating&quot; the venv, which changes the prompt, I prepended the .venv/bin directory onto my PATH.</p>
 <pre><code>export PATH=$HOME/.venv/bin:$PATH
-export VIRTUAL_ENV=$HOME/.venv
 </code></pre>
 <h2 id="create-a-new-module-called-shortscale">Create a new module called shortscale</h2>
 <p>First I wrote a skeleton <code>shortscale</code> function which just returns a string with the input.</p>
@@ -163,7 +164,7 @@ __version__ <span class="token operator">=</span> <span class="token string">"0.
 </code></pre>
 <p>Next, I built and published this incomplete <a href="https://github.com/jldec/shortscale-py/tree/bb9b026b9097ce9c601e632a9d1f74a7da6adf29" target="_blank" rel="noopener">v0.1</a> shortscale module.</p>
 <p>Unlike the npm JavaScript ecosystem, you can&#39;t just use pip to publish a module to the pypi repository. There are <a href="https://packaging.python.org/en/latest/tutorials/packaging-projects/#creating-pyproject-toml" target="_blank" rel="noopener">different build tools</a> to choose from.</p>
-<p>I chose <code>setuptools</code> because it appears to be the closest to a standard, and shows what it&#39;s doing. This meant installing <a href="https://pypi.org/project/build/" target="_blank" rel="noopener">build</a> and <a href="https://pypi.org/project/build/" target="_blank" rel="noopener">twine</a>.   </p>
+<p>I chose <code>setuptools</code> because it appears to be the recommended tool, and shows what it&#39;s doing. This meant installing <a href="https://pypi.org/project/build/" target="_blank" rel="noopener">build</a> and <a href="https://pypi.org/project/build/" target="_blank" rel="noopener">twine</a>.   </p>
 <p>Python packages are described in a <code>pyproject.toml</code>. Note that project.scripts points to the CLI entrypoint at main().</p>
 <h4 id="pyprojecttoml">pyproject.toml</h4>
 <pre><code class="language-toml">[project]
@@ -192,17 +193,6 @@ version = {attr = &quot;shortscale.__version__&quot;}
 <p>The build tool creates 2 module bundles (source and runnable code) in the ./dist directory.</p>
 <pre><code>$ python -m build
 ...
-discovered py_modules -- [&#39;shortscale&#39;]
-...
-creating &#39;/Users/jldec/pub/shortscale-py/dist/.tmp-d0g4dwyd/shortscale-0.1.0-py3-none-any.whl&#39; and adding &#39;build/bdist.macosx-13.1-arm64/wheel&#39; to it
-adding &#39;shortscale.py&#39;
-adding &#39;shortscale-0.1.0.dist-info/LICENSE&#39;
-adding &#39;shortscale-0.1.0.dist-info/METADATA&#39;
-adding &#39;shortscale-0.1.0.dist-info/WHEEL&#39;
-adding &#39;shortscale-0.1.0.dist-info/entry_points.txt&#39;
-adding &#39;shortscale-0.1.0.dist-info/top_level.txt&#39;
-adding &#39;shortscale-0.1.0.dist-info/RECORD&#39;
-removing build/bdist.macosx-13.1-arm64/wheel
 Successfully built shortscale-0.1.0.tar.gz and shortscale-0.1.0-py3-none-any.whl
 </code></pre>
 <h3 id="publish-to-pypiorg">Publish to pypi.org</h3>
@@ -222,21 +212,18 @@ $ python -m venv .venv
 $ source .venv/bin/activate
 
 (.venv) $ pip install shortscale
-Collecting shortscale
-  Using cached shortscale-0.1.0-py3-none-any.whl (3.8 kB)
-Installing collected packages: shortscale
+...
 Successfully installed shortscale-0.1.0
 
 (.venv) $ shortscale 0xffffffffffff
 281474976710655 (48 bits)
 
 $ deactivate
-$ 
 </code></pre>
 <h2 id="complete-the-logic">Complete the logic</h2>
 <p>Python still amazes me with its terseness and readability. </p>
-<p>The code ended up needing <a href="https://github.com/jldec/shortscale-py/blob/main/shortscale.py" target="_blank" rel="noopener">3 functions</a>, of which the longest is 30 lines with generous spacing. </p>
-<p>Here is the function which decomposes a number into powers of 1000. I wonder if this could be expressed as a <a href="https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions" target="_blank" rel="noopener">list comprehension</a>?</p>
+<p>The first iteration had <a href="https://github.com/jldec/shortscale-py/blob/main/shortscale.py" target="_blank" rel="noopener">3 functions</a>, of which the longest had 30 lines with generous spacing. </p>
+<p>One of those functions decomposes a number into powers of 1000.</p>
 <pre><code class="language-py"><span class="token keyword">def</span> <span class="token function">powers_of_1000</span><span class="token punctuation">(</span>n<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     <span class="token triple-quoted-string string">"""
     Return list of (n, exponent) for each power of 1000.
@@ -253,78 +240,71 @@ $
 
     <span class="token keyword">return</span> p_list
 </code></pre>
-<p>The <a href="https://github.com/jldec/shortscale-py/blob/main/tests/test_shortscale.py" target="_blank" rel="noopener">test function</a> took just 3 lines:</p>
-<pre><code class="language-py"><span class="token keyword">def</span> <span class="token function">test_shortscale</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span>num<span class="token punctuation">,</span> s<span class="token punctuation">)</span> <span class="token keyword">in</span> TESTS<span class="token punctuation">:</span>
-        <span class="token keyword">assert</span> shortscale<span class="token punctuation">.</span>shortscale<span class="token punctuation">(</span>num<span class="token punctuation">)</span> <span class="token operator">==</span> s
-</code></pre>
+<p>Playing aound in a Jupyter notebook, I was able to eliminate the extra function (and the list which it returns), simply by reversing the order of building the shortscale output.</p>
+<p><img src="./images/jupyter-notebook-vs-code.png" alt="Screenshot of a Jupyter notebook in VS Code exploring shortscale"></p>
+<p>Using a Jupyter environment in VS Code is a clear win. The <a href="https://github.com/jldec/shortscale-py/pull/3" target="_blank" rel="noopener">result</a> was simpler and faster.</p>
+<h2 id="testing">Testing</h2>
+<p>There is nice support for Python testing and debugging in VS Code. </p>
+<p>The <a href="https://github.com/jldec/shortscale-py/blob/main/tests/test_shortscale.py" target="_blank" rel="noopener">function</a> to run unit tests took just 3 lines. </p>
+<p><img src="./images/python-test-vscode.png" alt="Screenshot of VS Code Test integration for pytest"></p>
 <h2 id="benchmarks">Benchmarks</h2>
-<p>I was pleased with the <a href="https://github.com/jldec/shortscale-py/blob/main/tests/bench_shortscale.py" target="_blank" rel="noopener">benchmarks</a> as well. For this string-manipulation test-case, Python is only 2-3x slower than JavaScript on V8.</p>
+<p>I was pleased with the <a href="https://github.com/jldec/shortscale-py/blob/main/tests/bench_shortscale.py" target="_blank" rel="noopener">benchmarks</a> as well. For this string manipulation micro-benchmark, CPython 3.11 is only 1.5x slower than V8 JavaScript! </p>
 <p>Compiled languages like Go and Rust will outperform that, but again, not by a huge amount.   </p>
 <p>The results below are from my personal M1 arm64 running macOS.</p>
-<h4 id="python">Python</h4>
-<pre><code>$ python tests/bench_shortscale.py 
-         1 calls,        100 bytes,    11750 ns/call
-         2 calls,        200 bytes,     5584 ns/call
-         5 calls,        500 bytes,     4367 ns/call
-        10 calls,       1000 bytes,     4158 ns/call
-        20 calls,       2000 bytes,     4087 ns/call
-        50 calls,       5000 bytes,     4043 ns/call
-       100 calls,      10000 bytes,     4063 ns/call
-       200 calls,      20000 bytes,     4055 ns/call
-       500 calls,      50000 bytes,     3914 ns/call
-      1000 calls,     100000 bytes,     3839 ns/call
-      2000 calls,     200000 bytes,     3426 ns/call
-      5000 calls,     500000 bytes,     3044 ns/call
-     10000 calls,    1000000 bytes,     2479 ns/call
-     20000 calls,    2000000 bytes,     2131 ns/call
-     50000 calls,    5000000 bytes,     2067 ns/call
-    100000 calls,   10000000 bytes,     2072 ns/call
-</code></pre>
-<h4 id="javascript">Javascript</h4>
-<pre><code>&gt; node test/bench.js
+<h3 id="python">Python</h3>
+<h4 id="python-v3112">Python v3.11.2</h4>
+<pre><code>$ python tests/bench_shortscale.py
 
-20000 calls, 2000000 bytes, 1083 ns/call
-20000 calls, 2000000 bytes, 863 ns/call
-20000 calls, 2000000 bytes, 793 ns/call
-20000 calls, 2000000 bytes, 809 ns/call
-20000 calls, 2000000 bytes, 789 ns/call
-20000 calls, 2000000 bytes, 809 ns/call
-20000 calls, 2000000 bytes, 774 ns/call
-20000 calls, 2000000 bytes, 782 ns/call
-20000 calls, 2000000 bytes, 796 ns/call
-20000 calls, 2000000 bytes, 792 ns/call
-20000 calls, 2000000 bytes, 791 ns/call
-20000 calls, 2000000 bytes, 803 ns/call
+ 50000 calls,    5000000 bytes,     1264 ns/call
+100000 calls,   10000000 bytes,     1216 ns/call
+200000 calls,   20000000 bytes,     1216 ns/call
+</code></pre>
+<h4 id="python-v3109">Python v3.10.9</h4>
+<pre><code>$ python tests/bench_shortscale.py
+
+ 50000 calls,    5000000 bytes,     1811 ns/call
+100000 calls,   10000000 bytes,     1808 ns/call
+200000 calls,   20000000 bytes,     1809 ns/call
+</code></pre>
+<h3 id="javascript">Javascript</h3>
+<pre><code>$ node test/bench.js
+
 20000 calls, 2000000 bytes, 796 ns/call
 20000 calls, 2000000 bytes, 790 ns/call
 20000 calls, 2000000 bytes, 797 ns/call
 </code></pre>
-<h4 id="go">Go</h4>
+<h3 id="go">Go</h3>
 <pre><code>$ go test -bench . -benchmem
-goos: darwin
-goarch: arm64
-pkg: github.com/jldec/shortscale-go
+
 BenchmarkShortscale-8   	 4227788	       252.0 ns/op	     248 B/op	       5 allocs/op
---- BENCH: BenchmarkShortscale-8
-    shortscale_test.go:38: 1 iterations, 100 bytes
-    shortscale_test.go:38: 100 iterations, 10000 bytes
-    shortscale_test.go:38: 10000 iterations, 1000000 bytes
-    shortscale_test.go:38: 1000000 iterations, 100000000 bytes
-    shortscale_test.go:38: 4227788 iterations, 422778800 bytes
-PASS
-ok  	github.com/jldec/shortscale-go	1.629s
 </code></pre>
-<h4 id="rust">Rust</h4>
+<h3 id="rust">Rust</h3>
 <pre><code>$ cargo bench
 
 running 2 tests
 test a_shortscale                        ... bench:         182 ns/iter (+/- 3)
 test b_shortscale_string_writer_no_alloc ... bench:          63 ns/iter (+/- 2)
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 2 measured
 </code></pre>
-<p>For a small optimization, check out this <a href="https://github.com/jldec/shortscale-py/pull/1/files" target="_blank" rel="noopener">PR</a>.</p>
+<h2 id="lets-run-shortscale-in-the-browser">Let&#39;s run shortscale in the browser</h2>
+<p>Open your browser on <a href="https://pyodide.org/en/stable/console.html" target="_blank" rel="noopener">https://pyodide.org/en/stable/console.html</a> and paste the following python commands into the python REPL, line by line.</p>
+<pre><code class="language-python"><span class="token keyword">import</span> micropip
+<span class="token keyword">await</span> micropip<span class="token punctuation">.</span>install<span class="token punctuation">(</span><span class="token string">"shortscale"</span><span class="token punctuation">)</span>
+<span class="token keyword">import</span> shortscale
+
+shortscale<span class="token punctuation">.</span>shortscale<span class="token punctuation">(</span><span class="token number">0xffff0000</span><span class="token punctuation">)</span>
+
+shortscale<span class="token punctuation">.</span>bench_shortscale<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p><img src="./images/pyodide-shortscale.png" alt="Screenshot of browser at https://pyodide.org/en/stable/console.html running shortscale"></p>
+<p>Looks like Python in WASM in the browser is about 2 to 3 times slower than native CPython.</p>
+<h2 id="jupyter-notebooks-on-github">Jupyter notebooks on GitHub</h2>
+<p>GitHub shows the output of Jupyter notebook (.ipynb) files in your browser</p>
+<p><a href="https://github.com/jldec/shortscale-py/blob/main/shortscale.ipynb" target="_blank" rel="noopener">https://github.com/jldec/shortscale-py/blob/main/shortscale.ipynb</a></p>
+<p><img src="./images/shortscale-notebook-github.png" alt="Screenshot of https://github.com/jldec/shortscale-py/blob/main/shortscale.ipynb"></p>
+<h2 id="google-colaboratory">Google Colaboratory</h2>
+<p>You can also open the <a href="https://github.com/jldec/shortscale-py/blob/main/shortscale.ipynb" target="_blank" rel="noopener">notebook</a> from GitHub in a <a href="https://colab.research.google.com/github/jldec/shortscale-py/blob/main/shortscale.ipynb" target="_blank" rel="noopener">Google Colaboratory</a> environment</p>
+<p><a href="https://colab.research.google.com/github/jldec/shortscale-py/blob/main/shortscale.ipynb" target="_blank" rel="noopener">https://colab.research.google.com/github/jldec/shortscale-py/blob/main/shortscale.ipynb</a></p>
+<p><img src="./images/shortscale-on-google-colaboratory.png" alt="Screenshot of Google Colaboratory running at https://colab.research.google.com/github/jldec/shortscale-py/blob/main/shortscale.ipynb"></p>
 <blockquote>
 <blockquote>
 <p>Keep on learning<br>🚀</p>
