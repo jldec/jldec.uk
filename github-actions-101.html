@@ -61,7 +61,7 @@
 </nav>
 </div>
 
-<div id="title" style='background-image:url("images/snowy-boathouse.jpg");'>
+<div id="title" style='background-image:url("./images/snowy-boathouse.jpg");'>
   <div class="title">GitHub Actions 101</div>
   <div class="subtitle"></div>
 </div>
@@ -75,7 +75,7 @@
 <div >
 <div data-render-html="/github-actions-101"><h1 id="how-do-github-actions-work">How do GitHub Actions work?</h1>
 <p>Today I was feeling a bit lost (again, sigh) trying to understand GitHub Actions.</p>
-<p>Specifically, the <a href="https://docs.github.com/en/free-pro-team@latest/actions" target="_blank" rel="noopener">documentation</a> did not appear to have an overview of how actions are composed and what they are composed of. What are those things that run? How are they named and referenced?</p>
+<p>Specifically, the <a href="https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions" target="_blank" rel="noopener">documentation</a> did not appear to have an overview of how actions are composed and what they are composed of. What are those things that run? How are they named and referenced?</p>
 <p>In retrospect, instead of the docs, I would recommend getting started by looking at the yaml for the <a href="https://github.com/actions/starter-workflows/blob/main/ci/blank.yml" target="_blank" rel="noopener">Simple workflow</a>. The button appears in the <strong>Actions</strong> tab on any new repo.</p>
 <p><img src="./images/actions-start-here.png" alt="Screenshot of GitHub Actions tab on new repo, showing sample workflow"></p>
 <p>The button will open the workflow yaml in an editor (it won&#39;t be committed to your repo yet).</p>
@@ -84,10 +84,10 @@
 <blockquote>
 <p>The first takeaway is that actions can be written using simple shell commands.</p>
 </blockquote>
-<p>Commands run in a shell in VMs which come preinstalled with <a href="https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1804-README.md" target="_blank" rel="noopener">commonly used tools</a>. There is no need to learn a new scripting language. You can even write your action as a shell script in a file, and invoke it from the workflow yaml.</p>
+<p>Commands run in a shell in VMs which come preinstalled with <a href="https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md" target="_blank" rel="noopener">commonly used tools</a>. There is no need to learn a new scripting language. You can even write your action as a shell script in a file, and invoke it from the workflow yaml.</p>
 <p>If you want, you can package and re-use portions of a job in different workflows. These components are also called <a href="https://docs.github.com/en/actions/creating-actions" target="_blank" rel="noopener">actions</a> (that&#39;s where some of my initial confusion originated), <em>but you don&#39;t need to learn to write those yourself in order to build your own workflows</em>.</p>
 <h2 id="dont-be-thrown-off-by-the-yaml">Don&#39;t be thrown off by the yaml</h2>
-<p>Each job is identified by its key e.g. <code>simple-job</code> in the example below.<br>The <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions" target="_blank" rel="noopener">workflow syntax</a> documentation denotes this as <code>jobs.&lt;job-id&gt;</code>.</p>
+<p>Each job is identified by its key e.g. <code>simple-job</code> in the example below.<br>The <a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions" target="_blank" rel="noopener">workflow syntax</a> documentation denotes this as <code>jobs.&lt;job-id&gt;</code>.</p>
 <pre><code class="language-yaml">on: push
 jobs:
   simple-job:
@@ -100,7 +100,7 @@ jobs:
         echo node version: `node -v`
         pwd
 </code></pre>
-<p><code>steps:</code> contains a list of commands, each described by a <code>run:</code><br>(In the earlier example above, there is also an <a href="https://docs.github.com/en/free-pro-team@latest/actions/creating-actions/about-actions" target="_blank" rel="noopener">action</a>, described with <code>uses:</code> instead of <code>run:</code>)</p>
+<p><code>steps:</code> contains a list of commands, each described by a <code>run:</code><br>(In the earlier example above, there is also an <a href="https://docs.github.com/en/actions/creating-actions/about-custom-actions" target="_blank" rel="noopener">action</a>, described with <code>uses:</code> instead of <code>run:</code>)</p>
 <p>The 1st run: command above is quoted, to avoid &quot;: &quot; being interpreted as a yaml map.</p>
 <p>The 2nd run: contains 2 commands in a multi-line (indented) block using &quot;|&quot;. This syntax does not require quotes, making it convenient for embedded scripts.</p>
 <p>If you push the workflow above to a new repo on GitHub, the result should look like this:</p>
